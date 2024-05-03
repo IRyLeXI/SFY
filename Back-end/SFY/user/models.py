@@ -54,6 +54,8 @@ class CustomUser(AbstractUser):
     
     picture = models.ImageField(_("profile picture"), blank=True)
     
+    followers = models.ManyToManyField('CustomUser', through='UserFollowers', blank=True)
+    
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ['email', 'first_name','last_name']
@@ -62,3 +64,11 @@ class CustomUser(AbstractUser):
     
     def __str__(self):
         return f"{self.username}"
+
+
+class UserFollowers(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='following')
+    follower = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='follower')
+
+    class Meta:
+        db_table = 'user_followers'
