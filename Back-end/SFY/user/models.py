@@ -50,7 +50,7 @@ class CustomUser(AbstractUser):
     
     email = models.EmailField(_('email'), max_length=80, unique=True)
     
-    birth_date = models.DateField(_("birthday date"), blank=True, default=timezone.now)
+    birth_date = models.DateField(_("birthday date"), blank=True)
     
     picture = models.ImageField(_("profile picture"), blank=True)
     
@@ -61,4 +61,4 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
     
     def __str__(self):
-        return f"{self.email}"
+        return f"{self.username}"

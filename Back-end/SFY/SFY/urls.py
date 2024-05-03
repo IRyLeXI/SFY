@@ -19,12 +19,14 @@ from django.urls import path, include
 from rest_framework import routers
 from user.views import *
 
-router = routers.SimpleRouter()
-router.register(r'user', UserViewSet)
+user_router = routers.SimpleRouter()
+user_router.register(r'user', UserViewSet)
+
 
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    # path('api/user/', include('user.urls')),
-    path('api/', include(router.urls)),
+    # # path('api/', include(router.urls)),
+    path('api/user/', include('user.urls')),
+    path('api/playlist/', include('playlist.urls')),
 ]
