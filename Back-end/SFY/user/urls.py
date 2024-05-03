@@ -4,6 +4,7 @@ from django.conf import settings
 from user.views import *
 
 urlpatterns = [
-    path('update/<int:pk>/', UserAPIUpdate.as_view()),
-    path('detail/<int:pk>/', UserAPIDetailView.as_view()),
+    path('get/all/', UserViewSet.as_view({'get': 'list'})),
+    path('update/<int:pk>/',  UserViewSet.as_view({'put': 'update'})),
+    path('get/<int:pk>/', UserViewSet.as_view({'get': 'retrieve'})),
 ]
