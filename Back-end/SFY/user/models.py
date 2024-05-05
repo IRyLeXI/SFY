@@ -50,11 +50,11 @@ class CustomUser(AbstractUser):
     
     email = models.EmailField(_('email'), max_length=80, unique=True)
     
-    birth_date = models.DateField(_("birthday date"), blank=True)
+    birth_date = models.DateField(_("birthday date"), blank=True, null=True)
     
-    picture = models.ImageField(_("profile picture"), blank=True)
+    picture = models.ImageField(_("profile picture"), blank=True, null=True)
     
-    followers = models.ManyToManyField('CustomUser', through='UserFollowers', blank=True)
+    followers = models.ManyToManyField('CustomUser', through='UserFollowers', blank=True, null=True)
     
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "username"

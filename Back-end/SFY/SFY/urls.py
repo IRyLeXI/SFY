@@ -18,15 +18,21 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from user.views import *
+from playlist.views import *
+from author.views import *
+from song.views import *
 
-user_router = routers.SimpleRouter()
-user_router.register(r'user', UserViewSet)
+router = routers.SimpleRouter()
 
+router.register(r'user', UserViewSet)
+router.register(r'playlist', PlaylistViewSet)
+router.register(r'author', AuthorViewSet)
+router.register(r'song', SongViewSet)
 
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    # # path('api/', include(router.urls)),
-    path('api/user/', include('user.urls')),
-    path('api/playlist/', include('playlist.urls')),
+    # path('api/', include(router.urls)),
+    # path('api/user/', include('user.urls')),
+    path('api/', include(router.urls)),
 ]

@@ -8,17 +8,17 @@ import datetime
 class Song(models.Model):
     name = models.CharField(_("song name"), max_length=200, blank=False, null=False, unique=False)
     
-    duration = models.DurationField(_("duration"), blank=True)
+    duration = models.DurationField(_("duration"), blank=True, null=True)
     
-    listened_num = models.IntegerField(_("number of listens"), default=0, blank=True)
+    listened_num = models.IntegerField(_("number of listens"), default=0, blank=True, null=True)
     
-    publication_date = models.DateTimeField(_("publication date"), blank = True, default=timezone.now())
+    publication_date = models.DateTimeField(_("publication date"), blank = True, null=True, default=timezone.now())
     
-    picture = models.ImageField(_("picture"), blank=True)
+    picture = models.ImageField(_("picture"), blank=True, null=True)
     
     authors = models.ManyToManyField(Author, blank=False, through='SongAuthors', related_name="songs")
     
-    playlists = models.ManyToManyField(Playlist, blank=True, through='PlaylistSongs', related_name="songs")
+    playlists = models.ManyToManyField(Playlist, blank=True, null=True, through='PlaylistSongs', related_name="songs")
 
     def __str__(self):
         return self.name
