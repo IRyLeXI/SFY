@@ -21,25 +21,31 @@ from user.views import *
 from playlist.views import *
 from author.views import *
 from song.views import *
+from genre.views import *
+from album.views import *
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
     TokenVerifyView,
 )
 
-router = routers.SimpleRouter()
+# router = routers.SimpleRouter()
 
-router.register(r'user', UserViewSet)
-router.register(r'playlist', PlaylistViewSet)
-router.register(r'author', AuthorViewSet)
-router.register(r'song', SongViewSet)
+# router.register(r'user', UserViewSet)
+# router.register(r'playlist', PlaylistViewSet)
+# router.register(r'author', AuthorViewSet)
+# router.register(r'song', SongViewSet)
 
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
+    path('api/user/', include('user.urls')),
+    path('api/playlist/', include('playlist.urls')),
+    path('api/author/', include('author.urls')),
+    path('api/song/', include('song.urls')),
+    path('api/genre/', include('genre.urls')),
+    path('api/album/', include('album.urls')),
     # path('api/', include(router.urls)),
-    # path('api/user/', include('user.urls')),
-    path('api/', include(router.urls)),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify', TokenVerifyView.as_view(), name='token_verify'),

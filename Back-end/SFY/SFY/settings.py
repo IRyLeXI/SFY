@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'author',
     'song',
     'genre',
-    
+    'album',
     
 ]
 

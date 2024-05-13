@@ -37,10 +37,10 @@ class CustomUser(AbstractUser):
      
     username = models.CharField(
         _("username"),
-        max_length=30,
+        max_length=50,
         unique=True,
         help_text=_(
-            "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
+            "Required. 50 characters or fewer. Letters, digits and @/./+/-/_ only."
         ),
         validators=[username_validator],
         error_messages={

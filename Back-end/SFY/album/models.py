@@ -13,6 +13,8 @@ class Album(models.Model):
     
     created_date = models.DateField(_("created date"), blank=False, default=timezone.now().date(), editable=False)
     
+    publish_date = models.DateField(_("publish date"), blank=True, default=timezone.now().date(), editable=True)
+    
     owner = models.ForeignKey(Author, on_delete=models.CASCADE, blank=False, related_name="albums")
     
     followers = models.ManyToManyField(CustomUser, blank=True, null=True, related_name="followed_albums")
