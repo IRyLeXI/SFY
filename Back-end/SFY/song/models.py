@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from author.models import Author
 from playlist.models import Playlist
+from genre.models import Genre
 import datetime
 
 class Song(models.Model):
@@ -19,6 +20,8 @@ class Song(models.Model):
     authors = models.ManyToManyField(Author, blank=False, through='SongAuthors', related_name="songs")
     
     playlists = models.ManyToManyField(Playlist, blank=True, null=True, through='PlaylistSongs', related_name="songs")
+    
+    genres = models.ManyToManyField(Genre, through='SongGenres', related_name="songs")
 
     def __str__(self):
         return self.name
@@ -38,3 +41,12 @@ class PlaylistSongs(models.Model):
 
     class Meta:
         db_table = 'playlist_songs'
+        
+        
+class SongGenres(models.Model):
+    song = models.ForeignKey(Song, on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    priority = models.IntegerField(_("priority"))
+
+    class Meta:
+        db_table = 'song_genres'        

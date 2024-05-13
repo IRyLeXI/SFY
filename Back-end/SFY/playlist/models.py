@@ -18,6 +18,8 @@ class Playlist(models.Model):
     
     is_private = models.BooleanField(_("is private"), blank = True, null=True, default=True)
     
+    is_generated = models.BooleanField(_("is generated"), blank = True, null=True, default=False)
+    
     followers = models.ManyToManyField(CustomUser, blank=True, null=True, related_name="followed_playlists",)
     
     def __str__(self):
