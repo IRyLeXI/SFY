@@ -2,8 +2,8 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from rest_framework_simplejwt.models import TokenUser
 from django.utils.translation import gettext_lazy as _
-
 
 class CustomUserManager(BaseUserManager):
     use_in_migrations = True
@@ -51,8 +51,8 @@ class CustomUser(AbstractUser):
     email = models.EmailField(_('email'), max_length=80, unique=True)
     
     birth_date = models.DateField(_("birthday date"), blank=True, null=True)
-    
-    picture = models.ImageField(_("profile picture"), blank=True, null=True)
+     
+    firebase_profile_picture_url = models.CharField(max_length=500, blank=True, null=True, default="sfy-firebase.appspot.com/profile_pictures/defaultuser.png")
     
     followers = models.ManyToManyField('CustomUser', through='UserFollowers', blank=True, null=True)
     
@@ -72,3 +72,4 @@ class UserFollowers(models.Model):
 
     class Meta:
         db_table = 'user_followers'
+               

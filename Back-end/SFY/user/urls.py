@@ -9,4 +9,5 @@ urlpatterns = [
     path('update/<int:pk>/',  UserViewSet.as_view({'put': 'update'})),
     path('patch/<int:pk>/',  UserViewSet.as_view({'patch': 'partial_update'})),
     path('delete/<int:pk>/', UserViewSet.as_view({'delete': 'destroy'})),
+    path('upload_picture/', UploadPictureView.as_view(), name='upload_picture'),
 ]
