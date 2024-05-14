@@ -6,7 +6,7 @@ from .serializers import UserSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from SFY.firebase_utils import upload_to_firebase_storage
+from SFY.firebase_utils import upload_user_picture_firebase
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -38,7 +38,7 @@ class UploadPictureView(APIView):
         if not picture_file:
             return Response({'error': 'Picture file is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        firebase_url = upload_to_firebase_storage(picture_file)
+        firebase_url = upload_user_picture_firebase(picture_file)
 
         user.firebase_profile_picture_url = firebase_url
         user.save()

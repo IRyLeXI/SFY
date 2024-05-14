@@ -52,7 +52,7 @@ class CustomUser(AbstractUser):
     
     birth_date = models.DateField(_("birthday date"), blank=True, null=True)
      
-    firebase_profile_picture_url = models.CharField(max_length=500, blank=True, null=True, default="sfy-firebase.appspot.com/profile_pictures/defaultuser.png")
+    picture_url = models.CharField(max_length=255, blank=True, null=True, default="sfy-firebase.appspot.com/profile_pictures/defaultuser.png")
     
     followers = models.ManyToManyField('CustomUser', through='UserFollowers', blank=True, null=True)
     

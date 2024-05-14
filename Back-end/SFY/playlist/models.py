@@ -8,7 +8,7 @@ from user.models import CustomUser
 class Playlist(models.Model):
     title = models.CharField(_("playlist title"), max_length=60, null=False, blank=False, help_text="Title cannot be empty", unique=False)
     
-    picture = models.ImageField(_("playlist image"), blank=True, null=True)
+    picture_url = models.CharField(_("playlist picture"), max_length=255, blank=True, null=True, default="sfy-firebase.appspot.com/playlists_pictures/defaultplaylist.png")
     
     created_date = models.DateField(_("created date"), blank=False, default=timezone.now().date(), editable=False)
     
