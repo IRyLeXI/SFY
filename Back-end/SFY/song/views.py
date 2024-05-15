@@ -1,15 +1,27 @@
 from datetime import timedelta
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
 from .models import Song
 from .serializers import SongSerializer
 from SFY.firebase_utils import upload_song_audio_firebase, upload_song_picture_firebase
 from mutagen.mp3 import MP3
+from SFY.permissions import IsOwnerOrAdmin, IsAuthorOrAdmin, IsSongOwnerOrAdmin
 
 class SongViewSet(viewsets.ModelViewSet):
     queryset = Song.objects.all()
     serializer_class = SongSerializer
 
+    def get_permissions(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            permission_classes = [permissions.AllowAny]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            permission_classes = [IsSongOwnerOrAdmin, permissions.IsAuthenticated]
+        elif self.action == 'create':
+            permission_classes = [IsAuthorOrAdmin, permissions.IsAuthenticated]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
+    
     def create(self, request, *args, **kwargs):
         audio_file = request.FILES.get('audio')
         picture_file = request.FILES.get('picture')

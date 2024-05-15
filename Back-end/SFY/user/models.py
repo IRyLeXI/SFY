@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework_simplejwt.models import TokenUser
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.hashers import make_password
 
 class CustomUserManager(BaseUserManager):
     use_in_migrations = True
@@ -56,6 +57,8 @@ class CustomUser(AbstractUser):
     
     followers = models.ManyToManyField('CustomUser', through='UserFollowers', blank=True, null=True)
     
+    is_author = models.BooleanField(_("is user author"), blank=True, null=True, default=False)
+    
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ['email', 'first_name','last_name']
@@ -64,6 +67,11 @@ class CustomUser(AbstractUser):
     
     def __str__(self):
         return f"{self.username}"
+    
+    def save(self, *args, **kwargs):
+        if self.password:
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
 
 class UserFollowers(models.Model):
