@@ -9,4 +9,6 @@ urlpatterns = [
     path('update/<int:pk>/',  AuthorViewSet.as_view({'put': 'update'})),
     path('patch/<int:pk>/',  AuthorViewSet.as_view({'patch': 'partial_update'})),
     path('delete/<int:pk>/', AuthorViewSet.as_view({'delete': 'destroy'})),
+    path('<int:pk>/songs/', AuthorViewSet.as_view({'get': 'get_songs'})),
+    path('<int:pk>/albums/', AuthorViewSet.as_view({'get': 'get_albums'})),
 ]

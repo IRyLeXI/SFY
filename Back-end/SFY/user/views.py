@@ -2,12 +2,14 @@ from django.shortcuts import render
 from .models import CustomUser
 from rest_framework.response import Response
 from rest_framework import status, generics, viewsets, permissions
-from .serializers import UserSerializer
+from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
+from rest_framework.decorators import action
+from .serializers import UserSerializer
 from SFY.firebase_utils import upload_user_picture_firebase
 from SFY.permissions import IsSelfOrAdmin
-from rest_framework.generics import get_object_or_404
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -15,15 +17,46 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 
-
     def get_permissions(self):
-        if self.action in ['update', 'partial_update', 'destroy']:
+        if self.action in ['update', 'partial_update', 'destroy',]:
             permission_classes = [IsSelfOrAdmin, permissions.IsAuthenticated]
+        elif self.action in ['follow', 'unfollow']:
+            permission_classes = [permissions.IsAuthenticated]    
         else:
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
     
+    
+    @action(detail=True, methods=['post'])
+    def follow(self, request, pk=None):
+        user = request.user
+        followed = get_object_or_404(CustomUser, pk=pk)
 
+        if user.id == followed.id:
+            return Response({'error': 'You cannot follow yourself'}, status=status.HTTP_403_FORBIDDEN)
+        
+        followed.followers.add(user)
+        followed.save()
+        
+        return Response({'detail': 'Followed successfully'}, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['delete'])
+    def unfollow(self, request, pk=None):
+        user = request.user
+        followed = get_object_or_404(CustomUser, pk=pk)
+
+        if user.id == followed.id:
+            return Response({'error': 'You cannot unfollow yourself'}, status=status.HTTP_403_FORBIDDEN)
+
+        if followed.followers.filter(id=user.id).exists():
+            followed.followers.remove(user)
+            followed.save()
+            return Response({'detail': 'Unfollowed successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'You are not following this user'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
 class UploadPictureView(APIView):
     def post(self, request, *args, **kwargs):
         user = request.user

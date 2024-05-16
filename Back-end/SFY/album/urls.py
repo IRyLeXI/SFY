@@ -10,4 +10,9 @@ urlpatterns = [
     path('patch/<int:pk>/',  AlbumViewSet.as_view({'patch': 'partial_update'})),
     path('delete/<int:pk>/', AlbumViewSet.as_view({'delete': 'destroy'})),
     path('upload_picture/<int:pk>/', UploadPictureView.as_view(), name='upload_album_picture'),
+    path('<int:pk>/songs/', AlbumViewSet.as_view({'get': 'get_songs'})),
+    path('<int:pk>/add_song/', AlbumViewSet.as_view({'post': 'add_song'})),
+    path('<int:pk>/add_songs/', AlbumViewSet.as_view({'post': 'add_songs'})),
+    path('<int:pk>/follow/', AlbumViewSet.as_view({'post': 'follow'})),
+    path('<int:pk>/unfollow/', AlbumViewSet.as_view({'delete': 'unfollow'})),
 ]
