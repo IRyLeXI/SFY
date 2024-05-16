@@ -5,6 +5,8 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework_simplejwt.models import TokenUser
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class CustomUserManager(BaseUserManager):
     use_in_migrations = True
@@ -81,3 +83,28 @@ class UserFollowers(models.Model):
     class Meta:
         db_table = 'user_followers'
                
+               
+               
+@receiver(post_save, sender=CustomUser)
+def create_default_playlists(sender, instance, created, **kwargs):
+    if created:
+        from playlist.models import Playlist
+        liked_songs_playlist = Playlist.objects.create(
+            title="Liked songs",
+            owner=instance,
+            picture_url = 'sfy-firebase.appspot.com/playlists_pictures/liked_songs_playlist.png',
+            is_private=True,
+            is_generated=True
+        )
+        liked_songs_playlist.followers.add(instance)
+        liked_songs_playlist.save()
+
+        daily_recommendations_playlist = Playlist.objects.create(
+            title="Daily Recommendations",
+            owner=instance,
+            picture_url = 'sfy-firebase.appspot.com/playlists_pictures/daily_playlist.jpg',
+            is_private=True,
+            is_generated=True
+        )
+        daily_recommendations_playlist.followers.add(instance)
+        daily_recommendations_playlist.save()                  
