@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+    
 class CustomUserManager(BaseUserManager):
     use_in_migrations = True
     
@@ -61,6 +61,8 @@ class CustomUser(AbstractUser):
     
     is_author = models.BooleanField(_("is user author"), blank=True, null=True, default=False)
     
+    listens = models.ManyToManyField('song.Song', through='UserListens', blank=True, null=True)
+    
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ['email', 'first_name','last_name']
@@ -82,6 +84,20 @@ class UserFollowers(models.Model):
 
     class Meta:
         db_table = 'user_followers'
+        
+        
+class UserListens(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    song = models.ForeignKey('song.Song', on_delete=models.CASCADE)
+    listen_time = models.DurationField(null=True, blank=True)
+    is_slider_used = models.BooleanField(default=False, blank=True, null=True)
+    slider_stamp = models.DurationField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} listened to {self.song.title}"    
+    
+    class Meta:
+        db_table = 'user_listens'    
                
                
                

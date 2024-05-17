@@ -1,8 +1,9 @@
 from datetime import timedelta
 from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
-from .models import Song
-from .serializers import SongSerializer
+from rest_framework.decorators import action
+from .models import Song, SongGenres
+from .serializers import SongSerializer, SongGenresSerializer
 from SFY.firebase_utils import upload_song_audio_firebase, upload_song_picture_firebase
 from mutagen.mp3 import MP3
 from SFY.permissions import IsOwnerOrAdmin, IsAuthorOrAdmin, IsSongOwnerOrAdmin
@@ -85,3 +86,25 @@ class SongViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         return Response(serializer.data)
+
+    
+    @action(detail=True, methods=['patch'])
+    def update_genres(self, request, pk=None):
+        song = self.get_object()
+        serializer = SongGenresSerializer(data=request.data['genres'], many=True)
+        
+        if serializer.is_valid():
+            SongGenres.objects.filter(song=song).delete()
+            
+            genres_data = serializer.validated_data
+            for genre_data in genres_data:
+                #print(genre_data)
+                SongGenres.objects.create(
+                    song=song,
+                    genre=genre_data['genre']['id'],
+                    priority=genre_data['priority']
+                )
+            
+            return Response({'status': 'genres updated'})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

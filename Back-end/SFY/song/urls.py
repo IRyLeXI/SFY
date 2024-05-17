@@ -9,4 +9,5 @@ urlpatterns = [
     path('update/<int:pk>/',  SongViewSet.as_view({'put': 'update'})),
     path('patch/<int:pk>/',  SongViewSet.as_view({'patch': 'partial_update'})),
     path('delete/<int:pk>/', SongViewSet.as_view({'delete': 'destroy'})),
+    path('genres/<int:pk>/', SongViewSet.as_view({'patch': 'update_genres'})),
 ]

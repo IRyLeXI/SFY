@@ -12,4 +12,8 @@ urlpatterns = [
     path('upload_picture/', UploadPictureView.as_view(), name='upload_picture'),
     path('follow/<int:pk>/', UserViewSet.as_view({'post': 'follow'})),
     path('unfollow/<int:pk>/', UserViewSet.as_view({'delete': 'unfollow'})),
+    path('genre/favourite/', UserRecommendations.as_view({'get': 'get_user_favorite_genre'})),
+    path('song_listen/listen/', UserListen.as_view({'post': 'listen'})),
+    path('song_listen/<int:pk>/', UserListen.as_view({'get': 'get_by_song'})),
+    path('song_listen/<int:pk>', UserListen.as_view({'patch': 'patch_song_listen'})),
 ]

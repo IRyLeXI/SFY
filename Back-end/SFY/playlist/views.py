@@ -33,7 +33,7 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         request_user = request.user.id
         
         if user != request_user:
-            return Response({'detail': 'You cannot create playlists for other user'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'detail': 'You cannot create playlists for another user'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
