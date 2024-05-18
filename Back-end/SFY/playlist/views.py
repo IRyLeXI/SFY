@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from datetime import timedelta
 from django.utils import timezone
+from django.db.models import Count
 from .models import Playlist
 from rest_framework.response import Response
 from rest_framework import viewsets, status, permissions
@@ -14,6 +15,7 @@ from SFY.mixins import FollowUnfollowMixin, FavoriteGenresMixin
 from song.models import Song
 from song.serializers import SongSerializer
 from genre.models import Genre
+from user.models import CustomUser
 from random import shuffle, choices
 
 class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
@@ -100,7 +102,12 @@ class UploadPictureView(APIView):
     
     
 class PlaylistGenerators(viewsets.ViewSet, FavoriteGenresMixin):
-    permission_classes = [permissions.IsAuthenticated]
+    def get_permissions(self):
+        if self.action in ['update_admin_playlists']:
+            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+        else:
+            permission_classes = [permissions.IsAuthenticated] 
+        return [permission() for permission in permission_classes]
     
     @action(detail=True, methods=['get'])
     def get_daily_playlist(self, request, pk=None):
@@ -140,12 +147,53 @@ class PlaylistGenerators(viewsets.ViewSet, FavoriteGenresMixin):
         return self._get_existing_songs_response(playlist)
 
 
+    @action(detail=False, methods=['post'])
+    def update_admin_playlists(self, request):
+        admin_user = get_object_or_404(CustomUser, pk=1)
+        playlist_titles = ['Pop', 'Rock', 'Hip-Hop', 'Electro', 'Indie', 'R&b', 'Classic']
+        
+        playlists = Playlist.objects.filter(owner=admin_user, title__in=playlist_titles)
+        
+        for pl in playlists:
+            genre_name = pl.title
+            genre = get_object_or_404(Genre, name=genre_name)
+            
+            self._clear_playlist(pl)
+            self._generate_songs_for_playlist(pl, genre)
+            pl.updated_date = timezone.now()
+            pl.save()
+        
+        return Response({'detail': 'Admin playlists updated successfully.'}, status=status.HTTP_200_OK)
     
     
-    
-    def _clear_playlist(self, playlist):
-        playlist.songs.clear()
-        playlist.major_genre = None
+    @action(detail=False, methods=['post'])
+    def generate_playlist_from_song(self, request):
+        song_id = request.data.get('song_id')
+        
+        song = get_object_or_404(Song, pk=song_id)
+        
+        song_genres = song.genres.all()
+        
+        helper_playlist = Playlist.objects.get(owner=request.user, title="Helper playlist")
+        helper_playlist.songs.clear()
+        
+        if len(song_genres) < 3:
+            similar_songs = Song.objects.filter(genres__in=song_genres)
+        else:
+            similar_songs = Song.objects.filter(genres__in=song_genres).annotate(genre_count=Count('genres')).filter(genre_count__gte=3)
+        similar_songs = similar_songs.order_by('-listened_num')
+        
+        for song in similar_songs:
+            helper_playlist.songs.add(song)
+        
+        if helper_playlist.songs.count() < 30:
+            similar_songs = Song.objects.filter(genres__in=song_genres).annotate(genre_count=Count('genres')).filter(genre_count=1)
+            similar_songs = similar_songs.order_by('-listened_num')
+            
+            for song in similar_songs:
+                helper_playlist.songs.add(song)
+        
+        return self._get_existing_songs_response(helper_playlist)
 
 
     def _generate_songs_for_playlist(self, playlist, genre):
@@ -168,6 +216,12 @@ class PlaylistGenerators(viewsets.ViewSet, FavoriteGenresMixin):
         playlist.major_genre = genre
         playlist.updated_date = timezone.now()
         playlist.save()
+
+
+
+    def _clear_playlist(self, playlist):
+        playlist.songs.clear()
+        playlist.major_genre = None
 
     def _get_existing_songs_response(self, playlist):
         songs = playlist.songs.all()
