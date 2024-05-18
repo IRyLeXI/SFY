@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Sum
 from .models import Album
 from rest_framework.response import Response
 from rest_framework import status, generics, viewsets, permissions
@@ -9,9 +10,10 @@ from rest_framework.views import APIView
 from .serializers import AlbumSerializer
 from SFY.firebase_utils import upload_album_picture_firebase
 from SFY.permissions import IsAuthorOrAdmin, IsOwnerOrAdmin, IsAlbumPublishedOrAdmin
-from SFY.mixins import FollowUnfollowMixin
+from SFY.mixins import FollowUnfollowMixin, FavoriteGenresMixin
 from song.models import Song
 from song.serializers import SongSerializer
+import random
 
 class AlbumViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
     queryset = Album.objects.all()
@@ -24,7 +26,7 @@ class AlbumViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
             permission_classes = [IsAuthorOrAdmin, permissions.IsAuthenticated]
         elif self.action in ['retrieve', 'get_songs']:
             permission_classes = [IsAlbumPublishedOrAdmin]    
-        elif self.action in ['follow', 'unfollow']:
+        elif self.action in ['follow', 'unfollow', 'get_recommended_albums']:
             permission_classes = [permissions.IsAuthenticated]    
         else:
             permission_classes = [permissions.AllowAny]
@@ -61,6 +63,7 @@ class AlbumViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         
         song_id = request.data.get('song_id')
         album.songs.add(song_id)
+        album.set_major_genre('albums')
         serializer = self.get_serializer(album)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -84,8 +87,37 @@ class AlbumViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         for song in songs:
             album.songs.add(song)
         
+        album.set_major_genre('albums')
         serializer = self.get_serializer(album)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'])
+    def get_recommended_albums(self, request):
+        user = request.user
+        favorite_genres = FavoriteGenresMixin.get_user_favorite_genres(self, user)[:3]
+
+        albums_by_genre = []
+        for genre in favorite_genres:
+            albums = Album.objects.filter(major_genre=genre).annotate(
+                total_listens=Sum('songs__listened_num'),
+            ).order_by('-total_listens')[:20]
+            albums_by_genre.extend(albums)
+
+        if len(albums_by_genre) >= 6:
+            recommended_albums = random.sample(albums_by_genre, 6)
+        else:
+            recommended_albums = list(albums_by_genre)
+            additional_albums_needed = 6 - len(recommended_albums)
+            most_popular_albums = Album.objects.annotate(
+                total_listens=Sum('songs__listened_num'),
+            ).order_by('-total_listens')[:additional_albums_needed]
+            recommended_albums.extend(most_popular_albums)
+
+        recommended_albums.reverse()
+        serializer = self.get_serializer(recommended_albums, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        
     
     
 class UploadPictureView(APIView):

@@ -3,11 +3,12 @@ import datetime
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from user.models import CustomUser
-from song.models import Song, SongGenres
+from song.models import Song
 from genre.models import Genre
+from .mixins import GenreSetMixin
 
 # Create your models here.
-class Playlist(models.Model):
+class Playlist(models.Model, GenreSetMixin):
     title = models.CharField(_("playlist title"), max_length=60, null=False, blank=False, help_text="Title cannot be empty", unique=False)
     
     picture_url = models.CharField(_("playlist picture"), max_length=255, blank=True, null=True, default="sfy-firebase.appspot.com/playlists_pictures/defaultplaylist.png")
@@ -30,24 +31,6 @@ class Playlist(models.Model):
     
     def __str__(self):
         return self.title
-    
-    def set_playlist_genre(self):
-        song_genres = SongGenres.objects.filter(song__playlists=self)
-        genre_priority = {}
-
-        for song_genre in song_genres:
-            genre = song_genre.genre
-            priority = song_genre.priority
-            if genre not in genre_priority:
-                genre_priority[genre] = 0
-            genre_priority[genre] += priority
-
-        print(genre_priority)
-        
-        if genre_priority:
-            major_genre = min(genre_priority, key=genre_priority.get)
-            self.major_genre = major_genre
-            self.save() 
     
     
 class PlaylistsSongs(models.Model):

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.utils.dateparse import parse_duration
 from .models import CustomUser, UserListens
 from genre.models import Genre
 from song.models import Song
@@ -9,9 +10,11 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from rest_framework.decorators import action
 from .serializers import UserSerializer, UserListensSerializer
+from .mixins import SearchMixin
 from SFY.firebase_utils import upload_user_picture_firebase
 from SFY.permissions import IsSelfOrAdmin
 from SFY.mixins import FavoriteGenresMixin
+
 
 
 
@@ -78,8 +81,13 @@ class UploadPictureView(APIView):
 
 
 
-class UserRecommendations(viewsets.ViewSet, FavoriteGenresMixin):
-    permission_classes = [permissions.IsAuthenticated]
+class UserRecommendations(viewsets.ViewSet, FavoriteGenresMixin, SearchMixin):
+    def get_permissions(self):
+        if self.action in ['get_user_favorite_genre']:        
+            permission_classes = [permissions.IsAuthenticated]    
+        else:
+            permission_classes = [permissions.AllowAny]
+        return [permission() for permission in permission_classes]
 
     @action(detail=True, methods=['get'])
     def get_user_favorite_genre(self, request):
@@ -143,3 +151,34 @@ class UserListen(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)        
+    
+    
+    @action(detail=True, methods=['patch'])
+    def stop_last_listen(self, request):
+        user = request.user
+        duration = request.data.get('duration')
+
+        if not duration:
+            return Response({'error': 'Duration is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        last_listen = get_object_or_404(UserListens, user=user, listen_time=None)
+
+        listen_time = parse_duration(duration)
+        if not listen_time:
+            return Response({'error': 'Invalid duration format. Use HH:MM:SS.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if last_listen.is_slider_used:
+            slider_stamp = parse_duration(last_listen.slider_stamp)
+            if not slider_stamp:
+                return Response({'error': 'Invalid slider stamp format.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            listen_time -= slider_stamp
+
+        last_listen.listen_time = listen_time
+        last_listen.save()
+
+        serializer = UserListensSerializer(last_listen)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+    

@@ -7,6 +7,7 @@ from django.utils import timezone
 from random import choice
 from genre.models import Genre
 from user.models import UserListens
+from song.models import SongGenres
 
 class FollowUnfollowMixin:
     @action(detail=True, methods=['post'])
@@ -58,3 +59,6 @@ class FavoriteGenresMixin:
 
         sorted_genres = sorted(genre_priority_sum, key=genre_priority_sum.get, reverse=False)
         return sorted_genres[:10]
+    
+    
+    

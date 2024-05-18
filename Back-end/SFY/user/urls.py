@@ -16,4 +16,6 @@ urlpatterns = [
     path('song_listen/listen/', UserListen.as_view({'post': 'listen'})),
     path('song_listen/<int:pk>/', UserListen.as_view({'get': 'get_by_song'})),
     path('song_listen/<int:pk>', UserListen.as_view({'patch': 'patch_song_listen'})),
+    path('song_listen/stop/', UserListen.as_view({'patch': 'stop_last_listen'})),
+    path('search/', UserRecommendations.as_view({'get': 'search'})),
 ]

@@ -15,4 +15,5 @@ urlpatterns = [
     path('<int:pk>/add_songs/', AlbumViewSet.as_view({'post': 'add_songs'})),
     path('<int:pk>/follow/', AlbumViewSet.as_view({'post': 'follow'})),
     path('<int:pk>/unfollow/', AlbumViewSet.as_view({'delete': 'unfollow'})),
+    path('recommended/', AlbumViewSet.as_view({'get': 'get_recommended_albums'})),
 ]

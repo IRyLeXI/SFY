@@ -65,7 +65,11 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         song_id = request.data.get('song_id')
         song = get_object_or_404(Song, pk=song_id)
         playlist.songs.add(song)
-        playlist.set_playlist_genre()
+        
+        playlist.updated_date = timezone.now()
+        playlist.save()
+        
+        playlist.set_major_genre('playlists')
         serializer = self.get_serializer(playlist)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
@@ -110,7 +114,6 @@ class PlaylistGenerators(viewsets.ViewSet, FavoriteGenresMixin):
 
         now = timezone.now()
         if playlist.updated_date and (now - playlist.updated_date) < timedelta(hours=24) and playlist.major_genre:
-            print('returning, because not time yet', playlist.major_genre)
             return self._get_existing_songs_response(playlist)
         
         playlists = Playlist.objects.filter(owner=playlist.owner, title__in=[
@@ -163,6 +166,8 @@ class PlaylistGenerators(viewsets.ViewSet, FavoriteGenresMixin):
         
         playlist.songs.add(*chosen_songs)
         playlist.major_genre = genre
+        playlist.updated_date = timezone.now()
+        playlist.save()
 
     def _get_existing_songs_response(self, playlist):
         songs = playlist.songs.all()
