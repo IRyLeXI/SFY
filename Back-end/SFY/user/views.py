@@ -11,7 +11,7 @@ from rest_framework.decorators import action
 from .serializers import UserSerializer, UserListensSerializer
 from SFY.firebase_utils import upload_user_picture_firebase
 from SFY.permissions import IsSelfOrAdmin
-from random import choice
+from SFY.mixins import FavoriteGenresMixin
 
 
 
@@ -78,38 +78,21 @@ class UploadPictureView(APIView):
 
 
 
-class UserRecommendations(viewsets.ViewSet):
+class UserRecommendations(viewsets.ViewSet, FavoriteGenresMixin):
     permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=True, methods=['get'])
-    def get_user_favorite_genre(self, request,):
+    def get_user_favorite_genre(self, request):
         user = request.user
-
-        user_listens = UserListens.objects.filter(user=user)
-
-        if not user_listens:
-            random_genre_id = choice([1, 2, 3])
-            random_genre = Genre.objects.get(id=random_genre_id)
-            return Response({'favorite_genre': random_genre.name}, status=status.HTTP_200_OK)
-
-        genre_priority_sum = {}
-
-        for listen in user_listens:
-            genres = listen.song.genres.all()
-
-            for genre in genres:
-                genre_priority_sum[genre] = genre_priority_sum.get(genre, 0) + listen.song.songgenres_set.get(genre=genre).priority
-
-        sorted_genres = sorted(genre_priority_sum, key=genre_priority_sum.get)
-        print(sorted_genres)
-        
-        if len(genre_priority_sum) >= 2:
-            second_favorite_genre = sorted_genres[1]
-            return Response({'favorite_genre': second_favorite_genre.name}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Insufficient data to determine second favorite genre.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        #return Response({'favorite_genre': favorite_genre.name}, status=status.HTTP_200_OK)
+        top_genres = self.get_user_favorite_genres(user)
+        genre_data = [self.serialize_genre(genre) for genre in top_genres]
+        return Response({'top_genres': genre_data}, status=status.HTTP_200_OK)
+    
+    def serialize_genre(self, genre):
+        return {
+            'id': genre.id,
+            'name': genre.name,
+        }
     
     
 class UserListen(viewsets.ViewSet):

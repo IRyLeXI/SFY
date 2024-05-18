@@ -4,6 +4,9 @@ from rest_framework.decorators import action
 from playlist.models import Playlist
 from album.models import Album
 from django.utils import timezone
+from random import choice
+from genre.models import Genre
+from user.models import UserListens
 
 class FollowUnfollowMixin:
     @action(detail=True, methods=['post'])
@@ -36,3 +39,22 @@ class FollowUnfollowMixin:
             return Response({'detail': 'Unfollowed successfully'}, status=status.HTTP_200_OK)
         else:
             return Response({'detail': 'You are not following this item'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FavoriteGenresMixin:
+    def get_user_favorite_genres(self, user):
+        user_listens = UserListens.objects.filter(user=user)
+
+        if not user_listens:
+            random_genre_ids = [1, 2, 3]
+            return Genre.objects.filter(id__in=random_genre_ids)[:3]
+
+        genre_priority_sum = {}
+
+        for listen in user_listens:
+            genres = listen.song.genres.all()
+            for genre in genres:
+                genre_priority_sum[genre] = genre_priority_sum.get(genre, 0) + listen.song.songgenres_set.get(genre=genre).priority
+
+        sorted_genres = sorted(genre_priority_sum, key=genre_priority_sum.get, reverse=False)
+        return sorted_genres[:10]

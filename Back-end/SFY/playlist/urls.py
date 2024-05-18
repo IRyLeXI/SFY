@@ -14,4 +14,5 @@ urlpatterns = [
     path('<int:pk>/add_song/', PlaylistViewSet.as_view({'post': 'add_song'})),
     path('<int:pk>/follow/', PlaylistViewSet.as_view({'post': 'follow'})),
     path('<int:pk>/unfollow/', PlaylistViewSet.as_view({'delete': 'unfollow'})),
+    path('daily/<int:pk>/', PlaylistGenerators.as_view({'get': 'get_daily_playlist'})),
 ]

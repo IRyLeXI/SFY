@@ -115,12 +115,26 @@ def create_default_playlists(sender, instance, created, **kwargs):
         liked_songs_playlist.followers.add(instance)
         liked_songs_playlist.save()
 
-        daily_recommendations_playlist = Playlist.objects.create(
-            title="Daily Recommendations",
+        helper_playlist = Playlist.objects.create(
+            title="Helper playlist",
             owner=instance,
-            picture_url = 'sfy-firebase.appspot.com/playlists_pictures/daily_playlist.jpg',
+            picture_url = 'sfy-firebase.appspot.com/playlists_pictures/defaultplaylist.png',
             is_private=True,
             is_generated=True
         )
-        daily_recommendations_playlist.followers.add(instance)
-        daily_recommendations_playlist.save()                  
+        helper_playlist.followers.add(instance)
+        helper_playlist.save()
+
+        for i in range(1,4):
+            daily_recommendations_playlist = Playlist.objects.create(
+                title=f"Daily Recommendations {i}",
+                owner=instance,
+                picture_url = 'sfy-firebase.appspot.com/playlists_pictures/daily_playlist.jpg',
+                is_private=True,
+                is_generated=True
+            )
+            daily_recommendations_playlist.followers.add(instance)
+            daily_recommendations_playlist.save()                  
+            
+            
+        
