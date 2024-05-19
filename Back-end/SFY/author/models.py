@@ -11,6 +11,8 @@ class Author(CustomUser):
     
     def save(self, *args, **kwargs):
         self.is_author = True
+        if not self.picture_url:
+            self.picture_url = "https://storage.googleapis.com/sfy-firebase.appspot.com/profile_pictures/defaultuser.png"
         super().save(*args, **kwargs)
         
         

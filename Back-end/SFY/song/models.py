@@ -14,9 +14,9 @@ class Song(models.Model):
     
     publication_date = models.DateTimeField(_("publication date"), blank = True, null=True, default=timezone.now())
     
-    audio_url = models.CharField(_("audio URL"), max_length=500, blank=False, null=False, default="sfy-firebase.appspot.com/songs/audio/nevergonnagiveyouup.mp3",)
+    audio_url = models.CharField(_("audio URL"), max_length=500, blank=False, null=False, default="https://storage.googleapis.com/sfy-firebase.appspot.com/songs/audio/nevergonnagiveyouup.mp3",)
     
-    picture_url = models.CharField(_("picture URL"), max_length=500, blank=True, null=True)
+    picture_url = models.CharField(_("picture URL"), max_length=500, blank=True, null=True, default="https://storage.googleapis.com/sfy-firebase.appspot.com/songs/pictures/note.png")
     
     authors = models.ManyToManyField(Author, blank=False, through='SongAuthors', related_name="songs")
     

@@ -11,7 +11,7 @@ from .mixins import GenreSetMixin
 class Playlist(models.Model, GenreSetMixin):
     title = models.CharField(_("playlist title"), max_length=60, null=False, blank=False, help_text="Title cannot be empty", unique=False)
     
-    picture_url = models.CharField(_("playlist picture"), max_length=255, blank=True, null=True, default="sfy-firebase.appspot.com/playlists_pictures/defaultplaylist.png")
+    picture_url = models.CharField(_("playlist picture"), max_length=255, blank=True, null=True, default="https://storage.googleapis.com/sfy-firebase.appspot.com/playlists_pictures/defaultplaylist.png")
     
     created_date = models.DateTimeField(_("created date"), default=timezone.now, editable=False)
     
