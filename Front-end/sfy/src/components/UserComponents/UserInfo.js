@@ -22,16 +22,23 @@ const UserInfo = ({ user }) => {
     fetchProfilePicture();
   }, [user.picture_url]);
 
+  const fullName = user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` :
+    user.first_name || user.last_name || 'Name is hidden';
+
   return (
     <div className="user-info">
-      {profilePictureUrl ? (
-        <img src={profilePictureUrl} alt="Profile" className="profile-picture" />
-      ) : (
-        <img src="default-profile-picture-url" alt="Profile" className="profile-picture" />
-      )}
-      <h2>{user.username}</h2>
-      <p>Followers: {user.followers_count}</p>
-      {/* Додати іншу інформацію, якщо потрібно */}
+      <div className='user-image-container'>
+        <img
+          src={profilePictureUrl || "default-profile-picture-url"}
+          alt="Profile"
+          className="profile-picture"
+        />
+      </div>
+      <div className="user-details">
+        <h2>{user.username}</h2>
+        <p>{fullName}</p>
+        <p>Followers: {user.followers.length}</p>
+      </div>
     </div>
   );
 };

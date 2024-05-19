@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
-import api from '../../api';
-import './LoginPage.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
-const LoginPage = ({ onLogin }) => {
+const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
+  const handleLogin = async (event) => {
+    event.preventDefault();
     try {
-      const response = await api.post('token/', { username, password });
-      const { access, refresh } = response.data;
-      console.log(response.data)
-      const decodedToken = JSON.parse(atob(access.split('.')[1]));
+      const response = await axios.post('http://localhost:8000/api/token/', {
+        username,
+        password,
+      });
+      const decodedToken = jwtDecode(response.data.access);
       const userId = decodedToken.user_id;
 
-      localStorage.setItem('access_token', access);
-      localStorage.setItem('refresh_token', refresh);
+      localStorage.setItem('accessToken', response.data.access);
+      localStorage.setItem('refreshToken', response.data.refresh);
       localStorage.setItem('user_id', userId);
 
-      onLogin(userId);
+      navigate(`/user/${userId}`);
     } catch (error) {
-      setError('Invalid username or password');
+      console.error('Login error:', error);
     }
   };
 
@@ -47,7 +48,6 @@ const LoginPage = ({ onLogin }) => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        {error && <p className="error">{error}</p>}
         <button type="submit">Login</button>
       </form>
     </div>
