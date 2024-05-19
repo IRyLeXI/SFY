@@ -25,7 +25,7 @@ def create_default_playlists(sender, instance, created, **kwargs):
         liked_songs_playlist = Playlist.objects.create(
             title="Liked songs",
             owner=instance,
-            picture_url = 'sfy-firebase.appspot.com/playlists_pictures/liked_songs_playlist.png',
+            picture_url = 'https://storage.googleapis.com/sfy-firebase.appspot.com/playlists_pictures/liked_songs_playlist.png',
             is_private=True,
             is_generated=True
         )
@@ -35,7 +35,7 @@ def create_default_playlists(sender, instance, created, **kwargs):
         helper_playlist = Playlist.objects.create(
             title="Helper playlist",
             owner=instance,
-            picture_url = 'sfy-firebase.appspot.com/playlists_pictures/defaultplaylist.png',
+            picture_url = 'https://storage.googleapis.com/sfy-firebase.appspot.com/playlists_pictures/defaultplaylist.png',
             is_private=True,
             is_generated=True
         )
@@ -46,7 +46,7 @@ def create_default_playlists(sender, instance, created, **kwargs):
             daily_recommendations_playlist = Playlist.objects.create(
                 title=f"Daily Recommendations {i}",
                 owner=instance,
-                picture_url = 'sfy-firebase.appspot.com/playlists_pictures/daily_playlist.jpg',
+                picture_url = 'https://storage.googleapis.com/sfy-firebase.appspot.com/playlists_pictures/daily_playlist.jpg',
                 is_private=True,
                 is_generated=True
             )
