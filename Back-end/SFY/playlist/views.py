@@ -75,6 +75,11 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         serializer = self.get_serializer(playlist)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
+    @action(detail=True, methods=['get'])
+    def get_global_playlists(self, request):        
+        global_playlists = Playlist.objects.filter(owner_id=1, is_private=False)
+        serializer = self.get_serializer(global_playlists, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
         
         
@@ -166,7 +171,7 @@ class PlaylistGenerators(viewsets.ViewSet, FavoriteGenresMixin):
         return Response({'detail': 'Admin playlists updated successfully.'}, status=status.HTTP_200_OK)
     
     
-    @action(detail=False, methods=['post'])
+    @action(detail=True, methods=['post'])
     def generate_playlist_from_song(self, request):
         song_id = request.data.get('song_id')
         

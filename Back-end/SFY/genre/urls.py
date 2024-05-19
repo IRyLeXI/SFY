@@ -9,4 +9,5 @@ urlpatterns = [
     path('update/<int:pk>/',  GenreViewSet.as_view({'put': 'update'})),
     path('patch/<int:pk>/',  GenreViewSet.as_view({'patch': 'partial_update'})),
     path('delete/<int:pk>/', GenreViewSet.as_view({'delete': 'destroy'})),
+    path('search/', SearchGenre.as_view()),
 ]
