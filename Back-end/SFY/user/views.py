@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.utils.dateparse import parse_duration
-from .models import CustomUser, UserListens
+from .models import CustomUser, UserListens, UserFollowers
 from genre.models import Genre
 from song.models import Song
+from playlist.models import Playlist
+from playlist.serializers import PlaylistSerializer
 from rest_framework.response import Response
 from rest_framework import status, generics, viewsets, permissions
 from rest_framework.generics import get_object_or_404
@@ -61,9 +63,27 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response({'detail': 'You are not following this user'}, status=status.HTTP_400_BAD_REQUEST)
         
+    @action(detail=True, methods=['get'])    
+    def get_user_playlists(self, request, pk=None):
+        if request.user and request.user.id==pk:
+            playlists = Playlist.objects.filter(owner=pk, is_generated=False)
+        else:
+            playlists = Playlist.objects.filter(owner=pk, is_private = False, is_generated=False)      
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'])    
+    def get_user_followed_to(self, request, pk=None):
+        followed_users_ids = UserFollowers.objects.filter(follower_id=pk).values_list('user_id', flat=True)
+        followed_users = CustomUser.objects.filter(id__in=followed_users_ids)
+        serializer = UserSerializer(followed_users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)    
+        
         
         
 class UploadPictureView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
     def post(self, request, *args, **kwargs):
         user = request.user
 
