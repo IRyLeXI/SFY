@@ -44,7 +44,7 @@ class FollowUnfollowMixin:
 
 class FavoriteGenresMixin:
     def get_user_favorite_genres(self, user):
-        user_listens = UserListens.objects.filter(user=user)
+        user_listens = UserListens.objects.filter(user=user, is_slider_used=False)
 
         if not user_listens:
             random_genre_ids = [1, 2, 3]

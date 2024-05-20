@@ -13,6 +13,7 @@ from SFY.permissions import IsAuthorOrAdmin, IsOwnerOrAdmin, IsAlbumPublishedOrA
 from SFY.mixins import FollowUnfollowMixin, FavoriteGenresMixin
 from song.models import Song
 from song.serializers import SongSerializer
+from user.models import CustomUser
 import random
 
 class AlbumViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
@@ -26,7 +27,7 @@ class AlbumViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
             permission_classes = [IsAuthorOrAdmin, permissions.IsAuthenticated]
         elif self.action in ['retrieve', 'get_songs']:
             permission_classes = [IsAlbumPublishedOrAdmin]    
-        elif self.action in ['follow', 'unfollow', 'get_recommended_albums']:
+        elif self.action in ['follow', 'unfollow']:
             permission_classes = [permissions.IsAuthenticated]    
         else:
             permission_classes = [permissions.AllowAny]
@@ -93,7 +94,12 @@ class AlbumViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
     
     @action(detail=True, methods=['get'])
     def get_recommended_albums(self, request):
-        user = request.user
+        if request.user.is_authenticated:
+            print("auth")
+            user = request.user
+        else:
+            print("unauth")
+            user = CustomUser.objects.get(id=1)
         favorite_genres = FavoriteGenresMixin.get_user_favorite_genres(self, user)[:3]
 
         albums_by_genre = []

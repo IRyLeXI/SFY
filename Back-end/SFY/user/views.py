@@ -5,6 +5,8 @@ from genre.models import Genre
 from song.models import Song
 from playlist.models import Playlist
 from playlist.serializers import PlaylistSerializer
+from album.models import Album
+from album.serializers import AlbumSerializer
 from rest_framework.response import Response
 from rest_framework import status, generics, viewsets, permissions
 from rest_framework.generics import get_object_or_404
@@ -18,8 +20,6 @@ from SFY.permissions import IsSelfOrAdmin
 from SFY.mixins import FavoriteGenresMixin
 
 
-
-
 class UserViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     queryset = CustomUser.objects.all()
@@ -28,7 +28,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy',]:
             permission_classes = [IsSelfOrAdmin, permissions.IsAuthenticated]
-        elif self.action in ['follow', 'unfollow']:
+        elif self.action in ['follow', 'unfollow', 'is_logged_in', 'get_user_followed_albums_playlists']:
             permission_classes = [permissions.IsAuthenticated]    
         else:
             permission_classes = [permissions.AllowAny]
@@ -65,9 +65,11 @@ class UserViewSet(viewsets.ModelViewSet):
         
     @action(detail=True, methods=['get'])    
     def get_user_playlists(self, request, pk=None):
-        if request.user and request.user.id==pk:
+        if request.user.is_authenticated and request.user.id==pk:
+            print("auth")
             playlists = Playlist.objects.filter(owner=pk, is_generated=False)
         else:
+            print("unauth")
             playlists = Playlist.objects.filter(owner=pk, is_private = False, is_generated=False)      
         serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -77,8 +79,31 @@ class UserViewSet(viewsets.ModelViewSet):
         followed_users_ids = UserFollowers.objects.filter(follower_id=pk).values_list('user_id', flat=True)
         followed_users = CustomUser.objects.filter(id__in=followed_users_ids)
         serializer = UserSerializer(followed_users, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)    
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'])
+    def get_user_followed_albums_playlists(self, request):
+        user = request.user
         
+        favourite_playlist = Playlist.objects.filter(owner=user, title="Liked songs").first()
+        favourite_serializer = PlaylistSerializer(favourite_playlist)
+        
+        subscribed_albums = Album.objects.filter(followers=user)
+        album_serializer = AlbumSerializer(subscribed_albums, many=True)
+        
+        subscribed_playlists = Playlist.objects.filter(followers=user, is_generated=False)
+        playlist_serializer = PlaylistSerializer(subscribed_playlists, many=True)
+        
+        return Response({
+            'liked_songs': favourite_serializer.data,
+            'subscribed_albums': album_serializer.data,
+            'subscribed_playlists': playlist_serializer.data
+        }, status=status.HTTP_200_OK)    
+    
+    
+    @action(detail=True, methods=['get'])    
+    def is_logged_in(self, request):
+        return Response(request.user.id, status=status.HTTP_200_OK)
         
         
 class UploadPictureView(APIView):
@@ -94,7 +119,7 @@ class UploadPictureView(APIView):
 
         firebase_url = upload_user_picture_firebase(picture_file)
 
-        user.firebase_profile_picture_url = firebase_url
+        user.picture_url = firebase_url
         user.save()
 
         return Response({'detail': 'Profile picture uploaded successfully.', 'firebase_url': firebase_url}, status=status.HTTP_201_CREATED)

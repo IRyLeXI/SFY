@@ -25,7 +25,7 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy', 'add_song']:
             permission_classes = [IsOwnerOrAdmin, permissions.IsAuthenticated]
-        elif self.action in ['create', 'follow', 'unfollow']:
+        elif self.action in ['create', 'follow', 'unfollow', 'get_daily_playlists']:
             permission_classes = [permissions.IsAuthenticated]
         elif self.action in ['retrieve', 'get_songs']:
             permission_classes = [IsPlaylistPrivateOrAdmin]  
@@ -48,7 +48,6 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    
     @action(detail=True, methods=['get'])
     def get_songs(self, request, pk=None):
         playlist = self.get_object()
@@ -80,7 +79,13 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         global_playlists = Playlist.objects.filter(owner_id=1, is_private=False)
         serializer = self.get_serializer(global_playlists, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
+    
+    @action(detail=True, methods=['get'])  
+    def get_daily_playlists(self, request):
+        user_id = request.user.id
+        user_playlists = Playlist.objects.filter(owner_id=user_id, title__startswith='Daily Recommendations', is_generated=True)
+        serializer = PlaylistSerializer(user_playlists, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
         
 class UploadPictureView(APIView):

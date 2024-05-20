@@ -10,6 +10,7 @@ urlpatterns = [
     path('patch/<int:pk>/',  PlaylistViewSet.as_view({'patch': 'partial_update'})),
     path('delete/<int:pk>/', PlaylistViewSet.as_view({'delete': 'destroy'})),
     path('get/global/', PlaylistViewSet.as_view({'get': 'get_global_playlists'})),
+    path('get/recommendations/', PlaylistViewSet.as_view({'get': 'get_daily_playlists'})),
     path('upload_picture/<int:pk>/', UploadPictureView.as_view(), name='upload_playlist_picture'),
     path('<int:pk>/songs/', PlaylistViewSet.as_view({'get': 'get_songs'})),
     path('<int:pk>/add_song/', PlaylistViewSet.as_view({'post': 'add_song'})),
