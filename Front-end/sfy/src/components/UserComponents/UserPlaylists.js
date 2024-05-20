@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../axiosConfig';
-import PlaylistCard from './PlaylistCard';
+import PlaylistCard from './CardComponents/PlaylistCard';
 import './UserPlaylists.css';
 
 const UserPlaylists = ({ userId }) => {

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import LoginPage from './components/Auth/LoginPage';
 import UserPage from './components/UserPage/UserPage';
-// import HomePage from './components/HomePage/HomePage';
+import HomePage from './components/HomePage/HomePage';
 // import SearchPage from './components/SearchPage/SearchPage';
 import './App.css';
 
@@ -17,7 +17,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/user/:id" element={<UserPage />} />
-          {/* <Route path="/" element={<HomePage />} /> */}
+          <Route path="/" element={<HomePage />} />
           {/* <Route path="/search" element={<SearchPage />} /> */}
         </Routes>
       </div>

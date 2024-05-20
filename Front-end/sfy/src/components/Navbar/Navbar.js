@@ -24,6 +24,7 @@ const Navbar = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     navigate('/login');
+    window.location.reload();
   };
 
   return (

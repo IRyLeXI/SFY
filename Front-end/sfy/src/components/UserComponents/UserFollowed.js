@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../axiosConfig';
-import FollowedUserCard from './FollowedUserCard';
+import FollowedUserCard from './CardComponents/FollowedUserCard';
 import './UserFollowed.css';
 
 const UserFollowed = ({ userId }) => {
