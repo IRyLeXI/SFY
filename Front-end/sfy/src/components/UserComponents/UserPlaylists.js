@@ -19,8 +19,7 @@ const UserPlaylists = ({ userId }) => {
 
     fetchUserPlaylists();
   }, [userId]);
-
-  if (playlists.length === 0) {
+  if (playlists === undefined || playlists.length===0) {
     return <div className="no-playlists">No playlists yet</div>
   }
 

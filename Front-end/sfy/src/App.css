@@ -5,6 +5,19 @@ body {
   min-height: 100vh;
 }
 
+.app-container {
+  display: flex;
+}
+
+.main-content {
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.shifted {
+  margin-left: 200px;
+}
+
 
 .App-header {
   background-color: #282c34;
