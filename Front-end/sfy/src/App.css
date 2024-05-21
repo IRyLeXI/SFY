@@ -3,6 +3,7 @@ body {
   background-size: cover;
   background-position: fixed;
   min-height: 100vh;
+
 }
 
 .app-container {
@@ -16,6 +17,12 @@ body {
 
 .main-content.shifted {
   margin-left: 200px;
+}
+
+.main-content {
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+  margin-bottom: 100px;
 }
 
 

@@ -1,0 +1,26 @@
+.playlist-page-songs {
+    background-color: rgba(70, 70, 70, 0.322);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.playlist-songs-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #ccc;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.playlist-songs-header span {
+    flex: 1;
+    text-align: center;
+}
+
+.playlist-songs-header .fas {
+    font-size: 1.2em;
+}

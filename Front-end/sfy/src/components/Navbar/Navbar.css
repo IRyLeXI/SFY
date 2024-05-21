@@ -4,7 +4,7 @@
     top: 0;
     height: 100%;
     width: 200px;
-    background-color: #333;
+    background-color: #333333e1;
     color: white;
     transition: transform 0.3s ease;
     transform: translateX(-100%);
@@ -19,11 +19,13 @@
     position: absolute;
     top: 10px;
     left: 200px;
-    background-color: #333;
+    background-color: #333333e1;
     color: white;
     border: none;
     padding: 10px;
     cursor: pointer;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 nav ul {
