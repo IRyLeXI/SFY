@@ -4,6 +4,9 @@ import api from '../../axiosConfig';
 import UserInfo from '../UserComponents/UserInfo';
 import UserPlaylists from '../UserComponents/UserPlaylists';
 import UserFollowed from '../UserComponents/UserFollowed';
+import AuthorInfo from '../UserComponents/AuthorInfo';
+import AuthorSongs from '../UserComponents/AuthorSongs';
+import AuthorAlbums from '../UserComponents/AuthorAlbums';
 import './UserPage.css';
 
 const UserPage = () => {
@@ -29,9 +32,20 @@ const UserPage = () => {
 
   return (
     <div className="user-page">
-      <UserInfo user={user} />
-      <UserPlaylists userId={id} />
-      <UserFollowed userId={id} />
+      {user.is_author ? (
+        <>
+          <AuthorInfo user={user} />
+          <AuthorSongs userId={id}/>
+          <AuthorAlbums userId={id} />
+          <UserPlaylists userId={id} />
+        </>
+      ) : (
+        <>
+          <UserInfo user={user} />
+          <UserPlaylists userId={id} />
+          <UserFollowed userId={id} />
+        </>
+      )}
     </div>
   );
 };

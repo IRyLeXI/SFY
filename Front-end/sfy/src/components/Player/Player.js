@@ -16,6 +16,7 @@ const Player = () => {
     const [pictureUrl, setPictureUrl] = useState('');
     const [volume, setVolume] = useState(1);
     const [songId, setSongId] = useState(localStorage.getItem('currentSongId'));
+    const [isVisible, setIsVisible] = useState(true);
     const audioRef = useRef(null);
 
     const apiUrl = '/user/song_listen/';
@@ -55,7 +56,7 @@ const Player = () => {
 
             setPictureUrl(pictureUrl);
             setAudioUrl(audioUrl);
-            setIsPlaying(true); // Automatically start playing the new song
+            setIsPlaying(true);
 
             await startListening(id);
         } catch (error) {
@@ -105,11 +106,11 @@ const Player = () => {
     const handlePlayPause = () => {
         setIsPlaying(prevIsPlaying => {
             if (prevIsPlaying) {
-                audioRef.current.pause(); // При натисканні на паузу зупиняємо програвання
+                audioRef.current.pause();
             } else {
-                audioRef.current.play(); // При натисканні на програвання починаємо програвання
+                audioRef.current.play();
             }
-            return !prevIsPlaying; // Повертаємо змінений стан isPlaying
+            return !prevIsPlaying;
         });
     };
 
@@ -146,6 +147,7 @@ const Player = () => {
             window.dispatchEvent(new Event('storage'));
         }
     };
+
     const handlePreviousSong = () => {
         const songQueue = JSON.parse(localStorage.getItem('songQueue')) || [];
         const currentSongIndex = songQueue.findIndex(s => s.id.toString() === songId.toString());
@@ -165,16 +167,24 @@ const Player = () => {
         }
     }, [audioRef.current, handleNextSong]);
 
-    if (!song) {
+    const handleClosePlayer = async () => {
+        handlePlayPause();
+        localStorage.removeItem('currentSongId');
+        localStorage.removeItem('songQueue');
+        window.location.reload();
+    };
+
+    if (!song || !isVisible) {
         return null;
     }
 
     return (
         <div className={`player ${isPlaying ? 'playing' : ''}`}>
+            <button onClick={handleClosePlayer} className="close-player-button">Close</button>
             <img src={pictureUrl} alt={song.name} className="player-picture" />
             <div className="player-info">
                 <h3>{song.name}</h3>
-                <Link to={`/user/${song.authors[0]}`}>Author {song.authors[0]}</Link>
+                <Link to={`/user/${song.authors[0]}`}>{song.authors_names[0]}</Link>
             </div>
             <div className="player-controls">
                 <input
@@ -221,6 +231,6 @@ const Player = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Player;

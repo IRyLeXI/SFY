@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../../firebase';
 import api from '../../axiosConfig';
 import './PlaylistInfo.css';
@@ -127,7 +127,7 @@ const PlaylistInfo = () => {
         </p>
         <p>{songs.length} Songs, {formatDuration(total_duration)}</p>
         <p>Followers: {playlistFollowers}</p>
-        {userId && userId !== owner_id && (
+        {loggedInUserId && userId !== owner_id && (
           <div>
             {isFollowing ? (
               <button onClick={handleUnfollow} disabled={loading}>

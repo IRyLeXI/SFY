@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../axiosConfig';
-import AlbumCard from '../UserComponents/CardComponents/AlbumCard';
+import AlbumCard from '../CardComponents/AlbumCard';
 import './RecommendedAlbums.css';
 
 const RecommendedAlbums = () => {

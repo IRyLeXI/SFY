@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../axiosConfig';
-import SongCard from '../UserComponents/CardComponents/SongCard';
+import SongCard from '../CardComponents/SongCard';
 import './AlbumSongs.css';
 
 const AlbumSongs = () => {
@@ -27,6 +27,12 @@ const AlbumSongs = () => {
     fetchSongs();
   }, [id]);
 
+  const handleSongClick = (clickedSong) => {
+    localStorage.setItem('songQueue', JSON.stringify(songs));
+    localStorage.setItem('currentSongId', clickedSong.id);
+    window.dispatchEvent(new Event('storage'));
+  };
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -44,7 +50,7 @@ const AlbumSongs = () => {
         <span><i className="fas fa-headphones-alt"></i></span>
       </div>
       {songs.map(song => (
-        <SongCard key={song.id} song={song} />
+        <SongCard key={song.id} song={song} onSongClick={handleSongClick}/>
       ))}
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../axiosConfig';
-import PlaylistCard from '../UserComponents/CardComponents/PlaylistCard';
-import AlbumCard from '../UserComponents/CardComponents/AlbumCard';
+import PlaylistCard from '../CardComponents/PlaylistCard';
+import AlbumCard from '../CardComponents/AlbumCard';
 import './SubscribedMusic.css';
 
 const SubscribedMusic = () => {
@@ -32,7 +32,7 @@ const SubscribedMusic = () => {
 
   return (
     <div className="subscribed-music">
-      <h2>Something, maybe you would like to check</h2>
+      <h2>From Your Library</h2>
       {isLoading ? (
         <p>Loading...</p>
       ) : subscribedMusic.length === 0 ? (
@@ -41,7 +41,7 @@ const SubscribedMusic = () => {
         <div className="subscribed-cards-container">
           {getRandomItems(subscribedMusic, 6).map(item => (
             <div key={item.id}>
-              {item.songs ? (
+              {item.is_private !== undefined ? (
                 <PlaylistCard playlist={item} />
               ) : (
                 <AlbumCard album={item} />

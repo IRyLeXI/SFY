@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { storage } from '../../../firebase'; // Імпорт конфігурації Firebase
+import { storage } from '../../firebase';
 import './FollowedUserCard.css';
 
 const FollowedUserCard = ({ user, onClick }) => {

@@ -8,8 +8,9 @@
 }
 
 .user-image-container {
-  width: 160px;
-  height: 160px;
+  position: relative;
+  width: 180px;
+  height: 180px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,6 +19,7 @@
   object-fit: cover;
   margin-right: 35px;
   margin-left: 20px;
+  cursor: pointer;
 }
 
 .profile-picture {
@@ -25,6 +27,30 @@
   height: 180px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.user-image-container.editable:hover .profile-picture {
+  opacity: 0.7;
+}
+
+.edit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 1.5em;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.user-image-container.editable:hover .edit-overlay {
+  opacity: 1;
 }
 
 .user-details {
@@ -60,4 +86,18 @@
 
 .user-details button:hover:not(:disabled) {
   background-color: #0056b3;
+}
+
+.edit-info-button-user {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #1db954;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-info-button-user:hover {
+  background-color: #17a745;
 }

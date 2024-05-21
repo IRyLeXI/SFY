@@ -3,9 +3,9 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../../firebase';
 import api from '../../axiosConfig';
 import AuthorEditForm from './AuthorEditForm';
-import './UserInfo.css';
+import './AuthorInfo.css';
 
-const UserInfo = ({ user }) => {
+const AuthorInfo = ({ user }) => {
   const [profilePictureUrl, setProfilePictureUrl] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -87,15 +87,15 @@ const UserInfo = ({ user }) => {
     user.first_name || user.last_name || 'Name is hidden';
 
   return (
-    <div className="user-info">
+    <div className="author-info">
       <div
-        className={`user-image-container ${loggedInUserId === user.id.toString() ? 'editable' : ''}`}
+        className={`author-image-container ${loggedInUserId === user.id.toString() ? 'editable' : ''}`}
         onClick={() => loggedInUserId === user.id.toString() && fileInputRef.current.click()}
         onMouseEnter={() => loggedInUserId === user.id.toString() && setIsEditingPicture(true)}
         onMouseLeave={() => loggedInUserId === user.id.toString() && setIsEditingPicture(false)}
       >
         <img
-          src={profilePictureUrl || "default-profile-picture-url"}
+          src={profilePictureUrl}
           alt="Profile"
           className="profile-picture"
         />
@@ -107,10 +107,13 @@ const UserInfo = ({ user }) => {
           onChange={handlePictureChange}
         />
       </div>
-      <div className="user-details">
+      <div className="author-details">
         <h2>{user.username}</h2>
         <p>{fullName}</p>
         <p>Followers: {userFollowers}</p>
+        {user.is_author && user.description && (
+          <p className="description">{user.description}</p>
+        )}
         {loggedInUserId && loggedInUserId !== user.id.toString() && (
           <div>
             {isFollowing ? (
@@ -125,7 +128,7 @@ const UserInfo = ({ user }) => {
           </div>
         )}
         {loggedInUserId === user.id.toString() && (
-          <button onClick={() => setIsEditingInfo(!isEditingInfo)} className="edit-info-button-user">
+          <button onClick={() => setIsEditingInfo(!isEditingInfo)} className="edit-info-button-author">
             {isEditingInfo ? 'Cancel' : 'Edit Info'}
           </button>
         )}
@@ -137,4 +140,4 @@ const UserInfo = ({ user }) => {
   );
 };
 
-export default UserInfo;
+export default AuthorInfo

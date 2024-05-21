@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../axiosConfig';
-import SongCard from '../UserComponents/CardComponents/SongCard';
+import SongCard from '../CardComponents/SongCard';
 import './PlaylistSongs.css';
 
 const PlaylistSongs = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../axiosConfig';
-import PlaylistCard from '../UserComponents/CardComponents/PlaylistCard';
+import PlaylistCard from '../CardComponents/PlaylistCard';
 import './DailyRecommendations.css';
 
 const DailyRecommendations = () => {
@@ -11,6 +11,7 @@ const DailyRecommendations = () => {
     const fetchRecommendations = async () => {
       try {
         const response = await api.get('/playlist/get/recommendations/');
+        const update = await api.get('playlist/daily/')
         setRecommendations(response.data);
         setIsLoading(false);
       } catch (error) {

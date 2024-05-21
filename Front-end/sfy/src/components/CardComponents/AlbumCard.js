@@ -1,6 +1,6 @@
 import React, { useState, useEffect,  } from 'react';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { storage } from '../../../firebase';
+import { storage } from '../../firebase';
 import './AlbumCard.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,7 +34,7 @@ const AlbumCard = ({ album }) => {
         <h4>{album.title}</h4>
         <p>Owner: {album.owner_username}</p>
         <p>Published: {new Date(album.publish_date).toLocaleDateString()}</p>
-        <p>Genre: {album.major_genre}</p>
+        <p>Genre: {album.genre_name}</p>
       </div>
     </div>
   );

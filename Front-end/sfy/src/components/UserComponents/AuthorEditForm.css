@@ -1,0 +1,30 @@
+.edit-info-form-author {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .edit-info-form-author label {
+    margin-bottom: 10px;
+  }
+  
+  .edit-info-form-author input {
+    margin-left: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .edit-info-form-author button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-info-form-author button:hover {
+    background-color: #17a745;
+  }
+  

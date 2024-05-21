@@ -127,20 +127,24 @@ const AlbumInfo = () => {
         </p>
         <p>{songs.length} Songs</p>
         <p>Followers: {albumFollowers}</p>
-        {userId && userId !== owner_id ? (
-          <div>
-            {isFollowing ? (
-              <button onClick={handleUnfollow} disabled={loading}>
-                Unfollow
-              </button>
+        {loggedInUserId && (
+          <>
+            {userId !== owner_id ? (
+              <div>
+                {isFollowing ? (
+                  <button onClick={handleUnfollow} disabled={loading}>
+                    Unfollow
+                  </button>
+                ) : (
+                  <button onClick={handleFollow} disabled={loading}>
+                    Follow
+                  </button>
+                )}
+              </div>
             ) : (
-              <button onClick={handleFollow} disabled={loading}>
-                Follow
-              </button>
+              <button onClick={handleAddSongClick}>Add Songs</button>
             )}
-          </div>
-        ) : (
-          <button onClick={handleAddSongClick}>Add Songs</button>
+          </>
         )}
       </div>
       {showAddSongForm && <AddSongForm albumId={id} onClose={handleCloseForm} />}

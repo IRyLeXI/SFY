@@ -1,7 +1,7 @@
 import React from 'react';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { useNavigate } from 'react-router-dom';
-import { storage } from '../../../firebase';
+import { storage } from '../../firebase';
 import './PlaylistCard.css';
 import { useState, useEffect } from 'react';
 

@@ -62,14 +62,14 @@
 
 .time-slider {
     width: 60%;
-    margin-left: -13%;
+    margin-left: -22%;
 }
 
 .time-info {
     display: flex;
     justify-content: space-between;
     width: 60%;
-    margin-left: -13%;
+    margin-left: -22%;
 }
 
 .control-buttons {
@@ -77,7 +77,7 @@
     align-items: center;
     justify-content: center;
     margin-top: 10px;
-    margin-left: -13%;
+    margin-left: -22%;
 }
 
 .player-button {
@@ -99,4 +99,21 @@
     margin-top: -2%;
     position: absolute;
     background: rgba(0, 0, 0, 1);
+}
+
+.close-player-button {
+    position: absolute;
+    top: -25px;
+    right: 20px;
+    background-color: #727272e5;
+    color: white;
+    border: none;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.close-player-button:hover {
+    background-color: #424242e5;
 }

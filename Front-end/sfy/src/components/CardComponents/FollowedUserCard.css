@@ -9,8 +9,8 @@
 }
 
 .followed-user-card:hover {
-    background-color: #333333; /* Темніша колір при наведенні миші */
-    transform: scale(1.1); /* Збільшення масштабу при наведенні */
+    background-color: #333333;
+    transform: scale(1.1);
 }
 
 .card-image-container {
@@ -24,11 +24,11 @@
     margin-bottom: 10px;
     margin-top: 15px;
     object-fit: cover;
-    transition: all 0.3s ease; /* Додаємо перехідні ефекти для плавних змін */
+    transition: all 0.3s ease;
 }
 
 .followed-user-card:hover .card-image-container {
-    box-shadow: 0 12px 12px rgba(0, 0, 0, 0.274); /* Збільшуємо тінь при наведенні */
+    box-shadow: 0 12px 12px rgba(0, 0, 0, 0.274);
 }
 
 .user-card-picture {
