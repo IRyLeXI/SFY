@@ -1,55 +1,56 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../../firebase';
 import api from '../../axiosConfig';
-import './PlaylistInfo.css';
+import './AlbumInfo.css';
+import AddSongForm from './AddSongForm';
 
-const PlaylistInfo = () => {
+const AlbumInfo = () => {
   const { id } = useParams();
-  const [playlist, setPlaylist] = useState(null);
+  const [album, setAlbum] = useState(null);
   const [pictureUrl, setPictureUrl] = useState('');
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [playlistFollowers, setPlaylistFollowers] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [showAddSongForm, setShowAddSongForm] = useState(false);
+  const [albumFollowers, setAlbumFollowers] = useState(0);
   const [isEditingPicture, setIsEditingPicture] = useState(false);
   const fileInputRef = useRef(null);
 
   const loggedInUserId = localStorage.getItem('user_id');
 
   useEffect(() => {
-    const fetchPlaylist = async () => {
+    const fetchAlbum = async () => {
       try {
-        const response = await api.get(`/playlist/get/${id}/`);
-        setPlaylist(response.data);
-        setPlaylistFollowers(response.data.followers.length);
-        setIsLoading(false);
+        const response = await api.get(`/album/get/${id}/`);
+        setAlbum(response.data);
+        setAlbumFollowers(response.data.followers.length);
 
-        const storageRef = ref(storage, response.data.picture_url);
-        const url = await getDownloadURL(storageRef);
-        setPictureUrl(url);
+        if (response.data.picture_url) {
+          const storageRef = ref(storage, response.data.picture_url);
+          const url = await getDownloadURL(storageRef);
+          setPictureUrl(url);
+        }
 
         if (loggedInUserId && response.data.followers.includes(parseInt(loggedInUserId, 10))) {
           setIsFollowing(true);
         }
       } catch (error) {
-        console.error('Error fetching playlist:', error);
-        setIsLoading(false);
+        console.error('Error fetching album:', error);
       }
     };
 
-    fetchPlaylist();
-  }, [id, loggedInUserId, pictureUrl]);
+    fetchAlbum();
+  }, [id, loggedInUserId]);
 
   const handleFollow = async () => {
     setLoading(true);
     try {
-      await api.post(`/playlist/${id}/follow/`);
+      await api.post(`/album/${id}/follow/`);
       setIsFollowing(true);
-      setPlaylistFollowers(prevFollowers => prevFollowers + 1);
+      setAlbumFollowers(prevFollowers => prevFollowers + 1);
     } catch (error) {
-      console.error('Error following playlist:', error);
+      console.error('Error following album:', error);
     }
     setLoading(false);
   };
@@ -57,13 +58,21 @@ const PlaylistInfo = () => {
   const handleUnfollow = async () => {
     setLoading(true);
     try {
-      await api.delete(`/playlist/${id}/unfollow/`);
+      await api.delete(`/album/${id}/unfollow/`);
       setIsFollowing(false);
-      setPlaylistFollowers(prevFollowers => prevFollowers - 1);
+      setAlbumFollowers(prevFollowers => prevFollowers - 1);
     } catch (error) {
-      console.error('Error unfollowing playlist:', error);
+      console.error('Error unfollowing album:', error);
     }
     setLoading(false);
+  };
+
+  const handleAddSongClick = () => {
+    setShowAddSongForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowAddSongForm(false);
   };
 
   const handlePictureChange = async (event) => {
@@ -73,7 +82,7 @@ const PlaylistInfo = () => {
       formData.append('picture', file);
 
       try {
-        const response = await api.patch(`/playlist/upload_picture/${id}/`, formData, {
+        const response = await api.patch(`/album/upload_picture/${id}/`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -87,31 +96,22 @@ const PlaylistInfo = () => {
     }
   };
 
-  const { title, owner_username, owner_id, songs, total_duration } = playlist || {};
-  const userId = parseInt(loggedInUserId, 10);
-
-  const formatDuration = (duration) => {
-    const [hours, minutes, seconds] = duration.split(':');
-    return `${hours} Hours, ${minutes} Minutes`;
-  };
-
-  if (isLoading) {
+  if (!album) {
     return <p>Loading...</p>;
   }
 
-  if (!playlist) {
-    return <p>Playlist not found</p>;
-  }
+  const { title, owner_username, owner_id, songs } = album;
+  const userId = parseInt(loggedInUserId, 10);
 
   return (
-    <div className="playlist-info">
+    <div className="album-info">
       <div
-        className={`playlist-picture-container ${userId === owner_id ? 'editable' : ''}`}
+        className={`album-picture-container ${userId === owner_id ? 'editable' : ''}`}
         onClick={() => userId === owner_id && fileInputRef.current.click()}
         onMouseEnter={() => userId === owner_id && setIsEditingPicture(true)}
         onMouseLeave={() => userId === owner_id && setIsEditingPicture(false)}
       >
-        <img src={pictureUrl} alt={title} className="playlist-picture" />
+        <img src={pictureUrl} alt={title} className="album-picture" />
         {isEditingPicture && <div className="edit-overlay">Edit</div>}
         <input
           type="file"
@@ -120,14 +120,14 @@ const PlaylistInfo = () => {
           onChange={handlePictureChange}
         />
       </div>
-      <div className="playlist-details">
+      <div className="album-details">
         <h1>{title}</h1>
         <p>
           Author: <Link to={`/user/${owner_id}`}>{owner_username}</Link>
         </p>
-        <p>{songs.length} Songs, {formatDuration(total_duration)}</p>
-        <p>Followers: {playlistFollowers}</p>
-        {userId && userId !== owner_id && (
+        <p>{songs.length} Songs</p>
+        <p>Followers: {albumFollowers}</p>
+        {userId && userId !== owner_id ? (
           <div>
             {isFollowing ? (
               <button onClick={handleUnfollow} disabled={loading}>
@@ -139,10 +139,13 @@ const PlaylistInfo = () => {
               </button>
             )}
           </div>
+        ) : (
+          <button onClick={handleAddSongClick}>Add Songs</button>
         )}
       </div>
+      {showAddSongForm && <AddSongForm albumId={id} onClose={handleCloseForm} />}
     </div>
   );
 };
 
-export default PlaylistInfo;
+export default AlbumInfo;

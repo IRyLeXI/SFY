@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../axiosConfig';
 import SongCard from '../UserComponents/CardComponents/SongCard';
-import './PlaylistSongs.css';
+import './AlbumSongs.css';
 
-const PlaylistSongs = () => {
+const AlbumSongs = () => {
   const { id } = useParams();
   const [songs, setSongs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -13,8 +13,9 @@ const PlaylistSongs = () => {
   useEffect(() => {
     const fetchSongs = async () => {
       try {
-        const response = await api.get(`/playlist/${id}/songs/`);
+        const response = await api.get(`/album/${id}/songs/`);
         setSongs(response.data);
+        localStorage.setItem('songQueue', JSON.stringify(response.data));
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching songs:', error);
@@ -26,12 +27,6 @@ const PlaylistSongs = () => {
     fetchSongs();
   }, [id]);
 
-  const handleSongClick = (clickedSong) => {
-    localStorage.setItem('songQueue', JSON.stringify(songs));
-    localStorage.setItem('currentSongId', clickedSong.id);
-    window.dispatchEvent(new Event('storage'));
-  };
-
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -41,18 +36,18 @@ const PlaylistSongs = () => {
   }
 
   return (
-    <div className="playlist-page-songs">
-      <div className="playlist-songs-header">
+    <div className="album-page-songs">
+      <div className="album-songs-header">
         <span>Song</span>
         <span>Created</span>
         <span><i className="fas fa-clock"></i></span>
         <span><i className="fas fa-headphones-alt"></i></span>
       </div>
       {songs.map(song => (
-        <SongCard key={song.id} song={song} onSongClick={handleSongClick} />
+        <SongCard key={song.id} song={song} />
       ))}
     </div>
   );
 };
 
-export default PlaylistSongs;
+export default AlbumSongs;

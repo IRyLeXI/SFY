@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../../firebase';
@@ -6,6 +6,7 @@ import api from '../../axiosConfig';
 import './Player.css';
 import prev from '../../prev.png';
 import next from '../../next.png';
+import pause from '../../pause.png';
 
 const Player = () => {
     const [song, setSong] = useState(null);
@@ -25,11 +26,12 @@ const Player = () => {
             if (newSongId && newSongId !== songId) {
                 await stopListening();
                 setSongId(newSongId);
-                await fetchSongData(newSongId);
+                setIsPlaying(true);
             }
         };
 
         window.addEventListener('storage', handleStorageChange);
+
         if (songId) {
             fetchSongData(songId);
         }
@@ -39,7 +41,7 @@ const Player = () => {
         };
     }, [songId]);
 
-    const fetchSongData = async (id) => {
+    const fetchSongData = useCallback(async (id) => {
         try {
             const response = await api.get(`/song/get/${id}/`);
             const songData = response.data;
@@ -53,19 +55,24 @@ const Player = () => {
 
             setPictureUrl(pictureUrl);
             setAudioUrl(audioUrl);
-            setIsPlaying(false);
-            
+            setIsPlaying(true); // Automatically start playing the new song
+
             await startListening(id);
         } catch (error) {
             console.error('Error fetching song data:', error);
         }
-    };
+    }, []);
 
     useEffect(() => {
         if (audioRef.current) {
-            isPlaying ? audioRef.current.play() : audioRef.current.pause();
+            const playPromise = audioRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.error('Error playing audio:', error);
+                });
+            }
         }
-    }, [isPlaying, song]);
+    }, [audioUrl]);
 
     useEffect(() => {
         if (audioRef.current) {
@@ -73,7 +80,7 @@ const Player = () => {
         }
     }, [volume]);
 
-    const startListening = async (id, isSliderUsed = false, sliderStamp = null) => {
+    const startListening = useCallback(async (id, isSliderUsed = false, sliderStamp = null) => {
         try {
             await api.post(`${apiUrl}listen/`, {
                 song_id: id,
@@ -83,9 +90,9 @@ const Player = () => {
         } catch (error) {
             console.error('Error starting song listen:', error);
         }
-    };
+    }, []);
 
-    const stopListening = async () => {
+    const stopListening = useCallback(async () => {
         try {
             await api.patch(`${apiUrl}stop/`, {
                 duration: "00:00:01"
@@ -93,15 +100,30 @@ const Player = () => {
         } catch (error) {
             console.error('Error stopping song listen:', error);
         }
-    };
+    }, []);
 
-    const handlePlayPause = async () => {
-        setIsPlaying(!isPlaying);
+    const handlePlayPause = () => {
+        setIsPlaying(prevIsPlaying => {
+            if (prevIsPlaying) {
+                audioRef.current.pause(); // При натисканні на паузу зупиняємо програвання
+            } else {
+                audioRef.current.play(); // При натисканні на програвання починаємо програвання
+            }
+            return !prevIsPlaying; // Повертаємо змінений стан isPlaying
+        });
     };
 
     const handleTimeUpdate = () => {
         if (audioRef.current) {
             setCurrentTime(audioRef.current.currentTime);
+        }
+    };
+
+    const handleSliderChange = async (e) => {
+        const newTime = e.target.value;
+        if (audioRef.current) {
+            audioRef.current.currentTime = newTime;
+            setCurrentTime(newTime);
         }
     };
 
@@ -114,14 +136,16 @@ const Player = () => {
     const handleNextSong = () => {
         const songQueue = JSON.parse(localStorage.getItem('songQueue')) || [];
         const currentSongIndex = songQueue.findIndex(s => s.id.toString() === songId.toString());
-        console.log(currentSongIndex)
         if (currentSongIndex >= 0 && currentSongIndex < songQueue.length - 1) {
             const nextSongId = songQueue[currentSongIndex + 1].id;
             localStorage.setItem('currentSongId', nextSongId);
             window.dispatchEvent(new Event('storage'));
+        } else if (currentSongIndex === songQueue.length - 1) {
+            const firstSongId = songQueue[0].id;
+            localStorage.setItem('currentSongId', firstSongId);
+            window.dispatchEvent(new Event('storage'));
         }
     };
-
     const handlePreviousSong = () => {
         const songQueue = JSON.parse(localStorage.getItem('songQueue')) || [];
         const currentSongIndex = songQueue.findIndex(s => s.id.toString() === songId.toString());
@@ -131,6 +155,15 @@ const Player = () => {
             window.dispatchEvent(new Event('storage'));
         }
     };
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.addEventListener('ended', handleNextSong);
+            return () => {
+                audioRef.current.removeEventListener('ended', handleNextSong);
+            };
+        }
+    }, [audioRef.current, handleNextSong]);
 
     if (!song) {
         return null;
@@ -149,6 +182,7 @@ const Player = () => {
                     min="0"
                     max={audioRef.current ? audioRef.current.duration : 0}
                     value={currentTime}
+                    onChange={handleSliderChange}
                     className="time-slider"
                 />
                 <div className="time-info">
@@ -161,7 +195,7 @@ const Player = () => {
                     </button>
                     <button onClick={handlePlayPause} className="player-button">
                         {isPlaying ? (
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNvTsnmEy2mdaX52J70ykAs3uSwCXVbU6F39w2-MOQxQ&s" alt="Pause" />
+                            <img src={pause} alt="Pause" />
                         ) : (
                             <img src="https://cdn2.iconfinder.com/data/icons/basics-1/100/Play-512.png" alt="Play" />
                         )}
@@ -187,6 +221,6 @@ const Player = () => {
             </div>
         </div>
     );
-};
+}
 
 export default Player;

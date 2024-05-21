@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,  } from 'react';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../../../firebase';
 import './AlbumCard.css';
+import { useNavigate } from 'react-router-dom';
 
 const AlbumCard = ({ album }) => {
   const [pictureUrl, setPictureUrl] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPictureUrl = async () => {
@@ -19,11 +21,16 @@ const AlbumCard = ({ album }) => {
 
     fetchPictureUrl();
   }, [album.picture_url]);
-  console.log(album)
+
+  const handleAlbumClick = () => {
+    navigate(`/album/${album.id}`);
+  };
+
+
   return (
-    <div className="album-card">
-      <img src={pictureUrl} alt="Album" className="album-picture" />
-      <div className="album-info">
+    <div className="album-card" onClick={handleAlbumClick}>
+      <img src={pictureUrl} alt="Album" className="album-card-picture" />
+      <div className="album-card-info">
         <h4>{album.title}</h4>
         <p>Owner: {album.owner_username}</p>
         <p>Published: {new Date(album.publish_date).toLocaleDateString()}</p>

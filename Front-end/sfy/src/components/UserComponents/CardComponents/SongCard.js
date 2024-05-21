@@ -3,7 +3,7 @@ import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../../../firebase';
 import './SongCard.css';
 
-const SongCard = ({ song }) => {
+const SongCard = ({ song, onSongClick }) => {
   const [pictureUrl, setPictureUrl] = useState('');
 
   useEffect(() => {
@@ -21,8 +21,7 @@ const SongCard = ({ song }) => {
   }, [song.picture_url]);
 
   const handleClick = () => {
-    localStorage.setItem('currentSongId', song.id);
-    window.dispatchEvent(new Event('storage'));
+    onSongClick(song);
   };
 
   return (

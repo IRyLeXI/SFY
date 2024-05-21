@@ -17,7 +17,7 @@
       transform: scale(1.1);
   }
 
-  .album-picture {
+  .album-card-picture {
       width: 190px;
       height: 180px;
       object-fit: cover;
@@ -31,14 +31,14 @@
       box-shadow: 0 8px 8px rgba(49, 49, 49, 0.1);
   }
 
-  .album-info {
+  .album-card-info {
       text-align: center;
   }
 
-  .album-info h4 {
+  .album-card-info h4 {
       margin: 10px 0;
   }
 
-  .album-info p {
+  .album-card-info p {
       margin: 5px 0;
   }

@@ -1,0 +1,45 @@
+.add-song-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+  }
+  
+  .add-song-form h2 {
+    margin-top: 0;
+  }
+  
+  .add-song-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .add-song-form button {
+    margin-right: 10px;
+    padding: 10px 20px;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-song-form button:hover {
+    background-color: #17a745;
+  }
+  
+  .add-song-form button:last-child {
+    background-color: #ccc;
+    color: black;
+  }
+  
+  .add-song-form button:last-child:hover {
+    background-color: #bbb;
+  }
+  
