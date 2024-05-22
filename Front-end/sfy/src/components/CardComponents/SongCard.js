@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDownloadURL, ref } from 'firebase/storage';
 import { storage } from '../../firebase';
+import { useNavigate } from 'react-router-dom';
 import api from '../../axiosConfig';
 import './SongCard.css';
 
@@ -11,8 +12,8 @@ const SongCard = ({ song, onSongClick }) => {
   const [showPlaylists, setShowPlaylists] = useState(false);
   const [loadingPlaylists, setLoadingPlaylists] = useState(false);
   const [error, setError] = useState('');
-
   const loggedInUserId = localStorage.getItem('user_id');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPictureUrl = async () => {
@@ -29,12 +30,12 @@ const SongCard = ({ song, onSongClick }) => {
   }, [song.picture_url]);
 
   const toggleMenu = (event) => {
-    event.stopPropagation();  // Запобігає виклику handleClick при натисканні на меню
+    event.stopPropagation();
     setShowMenu(!showMenu);
   };
 
   const handleAddToPlaylistClick = async (event) => {
-    event.stopPropagation();  // Запобігає виклику handleClick при натисканні на меню
+    event.stopPropagation();
     if (!loggedInUserId) {
       setError('You need to log in to add songs to playlists.');
       return;
@@ -67,6 +68,22 @@ const SongCard = ({ song, onSongClick }) => {
     }
   };
 
+  const handleSongRadioClick = async (event) => {
+    event.stopPropagation();
+    if (!loggedInUserId) {
+      setError('You need to log in to access song radio.');
+      return;
+    }
+
+    try {
+      const response = await api.post('/playlist/radio/', { song_id: song.id });
+      navigate(`/playlist/${response.data.id}`);
+    } catch (error) {
+      console.error('Error creating song radio playlist:', error);
+      alert('Error creating song radio playlist');
+    }
+  };
+
   return (
     <div className="song-card">
       <table>
@@ -89,7 +106,9 @@ const SongCard = ({ song, onSongClick }) => {
               {showMenu && (
                 <div className="menu">
                   <button onClick={handleAddToPlaylistClick}>Add to playlist</button>
-                  {/* Другу кнопку додамо пізніше */}
+                  {loggedInUserId && (
+                    <button onClick={handleSongRadioClick}>Song Radio</button>
+                  )}
                 </div>
               )}
               {showPlaylists && (
@@ -103,7 +122,7 @@ const SongCard = ({ song, onSongClick }) => {
                       <button
                         key={playlist.id}
                         onClick={(e) => {
-                          e.stopPropagation();  // Запобігає виклику handleClick при додаванні до плейлиста
+                          e.stopPropagation();
                           handleAddSongToPlaylist(playlist.id);
                         }}
                       >

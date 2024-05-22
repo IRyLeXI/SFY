@@ -45,7 +45,7 @@
 }
 
 .song-card td:nth-child(2) p {
-    margin-left: -200px
+    margin-left: -230px
 }
 
 .song-card td:nth-child(3) p {
@@ -53,11 +53,11 @@
 }
 
 .song-card td:nth-child(4) p {
-    margin-left: 13px;
+    margin-left: 19px;
 }
 
 .song-card td:nth-child(5) p {
-    margin-left: 120px;
+    margin-left: 149px;
 }
 
 .menu-button {
@@ -79,7 +79,7 @@
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.356);
-    right: 0; /* Додано, щоб меню відкривалося вправо */
+    right: 0;
 }
 
 .menu button {
@@ -103,7 +103,7 @@
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.356);
-    right: 0; /* Додано, щоб меню плейлистів відкривалося вправо */
+    right: 0;
     margin-top: 10px;
 }
 

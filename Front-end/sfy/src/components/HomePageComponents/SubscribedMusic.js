@@ -36,7 +36,7 @@ const SubscribedMusic = () => {
       {isLoading ? (
         <p>Loading...</p>
       ) : subscribedMusic.length === 0 ? (
-        <p>No subscribed music yet</p>
+        <p className='subscribed-music-no-data '>No subscribed music yet</p>
       ) : (
         <div className="subscribed-cards-container">
           {getRandomItems(subscribedMusic, 6).map(item => (

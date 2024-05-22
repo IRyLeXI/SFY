@@ -29,7 +29,7 @@ const DailyRecommendations = () => {
       {isLoading ? (
         <p>Loading...</p>
       ) : recommendations.length === 0 ? (
-        <p>Login to receive your daily recommendations!</p>
+        <p className='daily-recommendations-no-data'>Login to receive your daily recommendations!</p>
       ) : (
         <div className="recommendations-list">
           {recommendations.map(playlist => (

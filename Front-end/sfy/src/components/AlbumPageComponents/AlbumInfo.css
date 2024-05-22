@@ -73,7 +73,7 @@
   text-decoration: underline;
 }
 
-.playlist-details button {
+.album-details button {
   margin-top: 10px;
   padding: 10px 20px;
   background-color: #1db954;
@@ -83,6 +83,6 @@
   cursor: pointer;
 }
 
-.playlist-details button:hover {
+.album-details button:hover {
   background-color: #17a745;
 }

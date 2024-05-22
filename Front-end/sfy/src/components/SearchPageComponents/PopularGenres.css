@@ -1,0 +1,23 @@
+.popular-genres {
+    background-color: #00000033;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.popular-genres h3 {
+    font-size: 25px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.playlist-cards-container-search {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    margin-left: 5%;
+    margin-right: 2%;
+}

@@ -22,3 +22,15 @@
     padding-bottom: 20px;
     /* justify-content: center; */
 }
+
+.daily-recommendations-no-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 34px;
+    color: #464646;
+    margin-top: 10px;
+    border-radius: 15px;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

@@ -9,11 +9,12 @@
 .playlist-songs-header {
     display: flex;
     justify-content: space-between;
-    padding: 10px 20px;
+    padding: 10px 20px 10px 0px;
     background-color: #333;
     color: #ccc;
     border-radius: 10px;
     margin-bottom: 10px;
+    
 }
 
 .playlist-songs-header span {
@@ -24,3 +25,4 @@
 .playlist-songs-header .fas {
     font-size: 1.2em;
 }
+

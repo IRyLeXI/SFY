@@ -15,7 +15,6 @@ const AlbumSongs = () => {
       try {
         const response = await api.get(`/album/${id}/songs/`);
         setSongs(response.data);
-        localStorage.setItem('songQueue', JSON.stringify(response.data));
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching songs:', error);
@@ -47,10 +46,10 @@ const AlbumSongs = () => {
         <span>Song</span>
         <span>Created</span>
         <span><i className="fas fa-clock"></i></span>
-        <span><i className="fas fa-headphones-alt"></i></span>
+        <span className='shift-a-little'><i className="fas fa-headphones-alt"></i></span>
       </div>
       {songs.map(song => (
-        <SongCard key={song.id} song={song} onSongClick={handleSongClick}/>
+        <SongCard key={song.id} song={song} onSongClick={handleSongClick} />
       ))}
     </div>
   );

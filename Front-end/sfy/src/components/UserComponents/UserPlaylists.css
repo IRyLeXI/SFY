@@ -16,6 +16,7 @@
 
 .header h3 {
     padding-bottom: 20px;
+    font-size: 25px;
 }
 
 .add-playlist-button {
@@ -39,6 +40,7 @@
     flex-wrap: wrap;
     gap: 20px;
     padding-bottom: 10px;
+    
 }
 
 .view-all-button-playlists {

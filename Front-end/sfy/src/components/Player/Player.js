@@ -57,6 +57,7 @@ const Player = () => {
             setPictureUrl(pictureUrl);
             setAudioUrl(audioUrl);
             setIsPlaying(true);
+            setVolume(0.1);
 
             await startListening(id);
         } catch (error) {

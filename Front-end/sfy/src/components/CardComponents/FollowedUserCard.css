@@ -5,7 +5,10 @@
     cursor: pointer;
     transition: all 0.3s ease;
     border-radius: 15px;
-    width: 180px;
+    width: 190px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-color: #5050507a;
 }
 
 .followed-user-card:hover {
@@ -50,5 +53,5 @@
 
 .user-card-info p {
     margin: 5px 0;
-    color: #999;
+    color: #cacaca;
 }
