@@ -15,7 +15,7 @@ class SongViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == 'list' or self.action == 'retrieve':
             permission_classes = [permissions.AllowAny]
-        elif self.action in ['update', 'partial_update', 'destroy']:
+        elif self.action in ['update', 'partial_update', 'destroy', 'update_genres']:
             permission_classes = [IsSongOwnerOrAdmin, permissions.IsAuthenticated]
         elif self.action == 'create':
             permission_classes = [IsAuthorOrAdmin, permissions.IsAuthenticated]

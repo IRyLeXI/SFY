@@ -26,9 +26,7 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         if self.action in ['update', 'partial_update', 'destroy', 'add_song']:
             permission_classes = [IsOwnerOrAdmin, permissions.IsAuthenticated]
         elif self.action in ['create', 'follow', 'unfollow', 'get_daily_playlists']:
-            permission_classes = [permissions.IsAuthenticated]
-        elif self.action in ['retrieve', 'get_songs']:
-            permission_classes = [IsPlaylistPrivateOrAdmin]  
+            permission_classes = [permissions.IsAuthenticated] 
         else:
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
@@ -37,8 +35,8 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         user = request.data.get('owner')
         request_user = request.user.id
         
-        if user != request_user:
-            return Response({'detail': 'You cannot create playlists for another user'}, status=status.HTTP_403_FORBIDDEN)
+        if int(user) != int(request_user):
+            return Response({'detail': 'You cannot create album for other user'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -51,7 +49,13 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
     @action(detail=True, methods=['get'])
     def get_songs(self, request, pk=None):
         playlist = self.get_object()
-        songs = Song.objects.filter(playlists=playlist)
+        if playlist.is_private:
+            if request.user.is_authenticated and request.user==playlist.owner:
+                songs = Song.objects.filter(playlists=playlist)
+            else:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+        else:
+            songs = Song.objects.filter(playlists=playlist)   
         serializer = SongSerializer(songs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
@@ -83,10 +87,9 @@ class PlaylistViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
     @action(detail=True, methods=['get'])  
     def get_daily_playlists(self, request):
         user_id = request.user.id
-        user_playlists = Playlist.objects.filter(owner_id=user_id, title__startswith='Daily Recommendations', is_generated=True)
+        user_playlists = Playlist.objects.filter(owner_id=user_id, title__startswith='Daily Recommendations', is_generated=True).order_by('id')
         serializer = PlaylistSerializer(user_playlists, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
         
 class UploadPictureView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -114,39 +117,35 @@ class UploadPictureView(APIView):
 class PlaylistGenerators(viewsets.ViewSet, FavoriteGenresMixin):
     def get_permissions(self):
         if self.action in ['update_admin_playlists']:
-            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]   
         else:
             permission_classes = [permissions.IsAuthenticated] 
         return [permission() for permission in permission_classes]
     
     @action(detail=True, methods=['get'])
-    def get_daily_playlist(self, request, pk=None):
-        playlist = get_object_or_404(Playlist, pk=pk)
-
-        if not playlist.owner == request.user:
-            return Response({'error': 'Not allowed'}, status=status.HTTP_403_FORBIDDEN)
+    def get_daily_playlist(self, request):
+        user = request.user
         
-        if not playlist.is_generated:
-            return Response({'detail': 'This playlist is not generated automatically.'}, status=status.HTTP_400_BAD_REQUEST)
-
+        playlist = Playlist.objects.filter(owner=user, is_generated=True, title__in=[
+            'Daily Recommendations 1', 
+        ]).first()
+        
         now = timezone.now()
         if playlist.updated_date and (now - playlist.updated_date) < timedelta(hours=24) and playlist.major_genre:
             return self._get_existing_songs_response(playlist)
         
-        playlists = Playlist.objects.filter(owner=playlist.owner, title__in=[
+        playlists = Playlist.objects.filter(owner=playlist.owner, is_generated=True, title__in=[
             'Daily Recommendations 1', 'Daily Recommendations 2', 'Daily Recommendations 3'
         ])
         
-        favorite_genres = self.get_user_favorite_genres(playlist.owner)[:3]
-        
+        favorite_genres = list(self.get_user_favorite_genres(playlist.owner)[:3])
         if len(favorite_genres) < 3:
-            available_genres = Genre.objects.filter(id__in=[1, 2, 3])
+            available_genres = list(Genre.objects.filter(id__in=[1, 2, 3])) 
+            print(available_genres)
             missing_genres = 3 - len(favorite_genres)
             favorite_genres += choices(available_genres, k=missing_genres)
             
         shuffle(favorite_genres)
-
-        print(favorite_genres)
         
         for pl in playlists:
             self._clear_playlist(pl)
@@ -154,7 +153,8 @@ class PlaylistGenerators(viewsets.ViewSet, FavoriteGenresMixin):
             pl.updated_date = now
             pl.save()
 
-        return self._get_existing_songs_response(playlist)
+        return Response(status=status.HTTP_200_OK)
+
 
 
     @action(detail=False, methods=['post'])
@@ -202,8 +202,18 @@ class PlaylistGenerators(viewsets.ViewSet, FavoriteGenresMixin):
             
             for song in similar_songs:
                 helper_playlist.songs.add(song)
+
+                if helper_playlist.songs.count() >= 60:
+                    break
+                
+        unique_songs = list(helper_playlist.songs.all()[:30])
+        helper_playlist.songs.clear()
+        for song in unique_songs:
+            helper_playlist.songs.add(song)
+    
+        serializer = PlaylistSerializer(helper_playlist, many=False)        
         
-        return self._get_existing_songs_response(helper_playlist)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
     def _generate_songs_for_playlist(self, playlist, genre):

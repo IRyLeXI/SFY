@@ -1,3 +1,5 @@
+from datetime import timedelta
+from django.utils import timezone
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -27,7 +29,7 @@ def create_default_playlists(sender, instance, created, **kwargs):
             owner=instance,
             picture_url = 'https://storage.googleapis.com/sfy-firebase.appspot.com/playlists_pictures/liked_songs_playlist.png',
             is_private=True,
-            is_generated=True
+            is_generated=False
         )
         liked_songs_playlist.followers.add(instance)
         liked_songs_playlist.save()
@@ -42,13 +44,14 @@ def create_default_playlists(sender, instance, created, **kwargs):
         helper_playlist.followers.add(instance)
         helper_playlist.save()
 
-        for i in range(1,3):
+        for i in range(1,4):
             daily_recommendations_playlist = Playlist.objects.create(
                 title=f"Daily Recommendations {i}",
                 owner=instance,
-                picture_url = 'https://storage.googleapis.com/sfy-firebase.appspot.com/playlists_pictures/daily_playlist.jpg',
+                picture_url = f'https://storage.googleapis.com/sfy-firebase.appspot.com/playlists_pictures/daily_recommendations{i}.jpg',
                 is_private=True,
-                is_generated=True
+                is_generated=True,
+                updated_date = timezone.now() - timedelta(days=1, hours=1)      
             )
             daily_recommendations_playlist.followers.add(instance)
             daily_recommendations_playlist.save() 

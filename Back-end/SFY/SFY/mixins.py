@@ -55,10 +55,16 @@ class FavoriteGenresMixin:
         for listen in user_listens:
             genres = listen.song.genres.all()
             for genre in genres:
-                genre_priority_sum[genre] = genre_priority_sum.get(genre, 0) + listen.song.songgenres_set.get(genre=genre).priority
+                original_priority = listen.song.songgenres_set.get(genre=genre).priority
+                inverted_priority = 6 - original_priority
+                genre_priority_sum[genre] = genre_priority_sum.get(genre, 0) + inverted_priority                    
 
-        sorted_genres = sorted(genre_priority_sum, key=genre_priority_sum.get, reverse=False)
+        sorted_genres = sorted(genre_priority_sum, key=genre_priority_sum.get, reverse=True)
+        print(sorted_genres)
         return sorted_genres[:10]
+    
+    def invert_priority(priority):
+        return 6 - priority
     
     
     

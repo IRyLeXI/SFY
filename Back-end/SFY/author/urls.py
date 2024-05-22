@@ -11,4 +11,5 @@ urlpatterns = [
     path('delete/<int:pk>/', AuthorViewSet.as_view({'delete': 'destroy'})),
     path('<int:pk>/songs/', AuthorViewSet.as_view({'get': 'get_songs'})),
     path('<int:pk>/albums/', AuthorViewSet.as_view({'get': 'get_albums'})),
+    path('created_songs/', AuthorViewSet.as_view({'get': 'get_created_songs'})),
 ]

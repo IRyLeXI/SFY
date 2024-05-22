@@ -6,7 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        exclude = ['listens', 'user_permissions', 'groups', 'is_staff', 'is_active', 'date_joined']
 
 
 class UserListensSerializer(serializers.ModelSerializer):

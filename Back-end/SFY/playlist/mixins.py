@@ -10,9 +10,12 @@ class GenreSetMixin:
             priority = song_genre.priority
             if genre not in genre_priority:
                 genre_priority[genre] = 0
-            genre_priority[genre] += priority
+            genre_priority[genre] += self.invert_priority(priority)
 
         if genre_priority:
-            major_genre = min(genre_priority, key=genre_priority.get)
+            major_genre = max(genre_priority, key=genre_priority.get)
             setattr(self, 'major_genre', major_genre)
             self.save()
+
+    def invert_priority(self, priority):
+        return 6 - priority

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.utils.dateparse import parse_duration
+from django.db.models import Q
 from .models import CustomUser, UserListens, UserFollowers
 from genre.models import Genre
 from song.models import Song
@@ -91,7 +92,7 @@ class UserViewSet(viewsets.ModelViewSet):
         subscribed_albums = Album.objects.filter(followers=user)
         album_serializer = AlbumSerializer(subscribed_albums, many=True)
         
-        subscribed_playlists = Playlist.objects.filter(followers=user, is_generated=False)
+        subscribed_playlists = Playlist.objects.filter(followers=user).exclude(Q(title__startswith="Daily Recommendations") | Q(title__startswith="Helper playlist"))
         playlist_serializer = PlaylistSerializer(subscribed_playlists, many=True)
         
         return Response({
@@ -149,17 +150,22 @@ class UserRecommendations(viewsets.ViewSet, FavoriteGenresMixin, SearchMixin):
     
     
 class UserListen(viewsets.ViewSet):
-    permission_classes = [permissions.IsAuthenticated]
-    
+  
     @action(detail=True, methods=['post'])
     def listen(self, request):
-        user = request.user
         song_id = request.data.get('song_id')
+        song = get_object_or_404(Song, id=song_id)
+        
+        if not request.user.is_authenticated:
+            song.listened_num += 1
+            song.save()
+            return Response(status=status.HTTP_200_OK)
+            
+        user = request.user
+        
 
         if not song_id:
             return Response({'error': 'Song ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        song = get_object_or_404(Song, id=song_id)
 
         listen_time = request.data.get('listen_time')
         is_slider_used = request.data.get('is_slider_used', False)
@@ -200,30 +206,44 @@ class UserListen(viewsets.ViewSet):
     
     @action(detail=True, methods=['patch'])
     def stop_last_listen(self, request):
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
         user = request.user
         duration = request.data.get('duration')
 
         if not duration:
+            print("no")
             return Response({'error': 'Duration is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        last_listen = get_object_or_404(UserListens, user=user, listen_time=None)
+        listens_to_update = UserListens.objects.filter(user=user, listen_time=None)
+
+        if not listens_to_update.exists():
+            return Response({'error': 'No listens to update.'}, status=status.HTTP_404_NOT_FOUND)
 
         listen_time = parse_duration(duration)
         if not listen_time:
+            print(duration)
             return Response({'error': 'Invalid duration format. Use HH:MM:SS.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if last_listen.is_slider_used:
-            slider_stamp = parse_duration(last_listen.slider_stamp)
+        listens_to_update.exclude(pk=listens_to_update.first().pk).delete()
+
+        listen = listens_to_update.first()
+
+        if listen.is_slider_used:
+            slider_stamp = parse_duration(listen.slider_stamp)
             if not slider_stamp:
                 return Response({'error': 'Invalid slider stamp format.'}, status=status.HTTP_400_BAD_REQUEST)
             
             listen_time -= slider_stamp
 
-        last_listen.listen_time = listen_time
-        last_listen.save()
+        listen.listen_time = listen_time
+        listen.save()
 
-        serializer = UserListensSerializer(last_listen)
+        serializer = UserListensSerializer(listen)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
     
     
     

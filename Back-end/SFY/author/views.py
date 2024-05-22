@@ -17,7 +17,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
     serializer_class = AuthorSerializer
     
     def get_permissions(self):
-        if self.action in ['update', 'partial_update', 'destroy']:
+        if self.action in ['update', 'partial_update', 'destroy', 'get_created_songs']:
             permission_classes = [IsSelfOrAdmin, permissions.IsAuthenticated]
         else:
             permission_classes = [permissions.AllowAny]
@@ -25,7 +25,7 @@ class AuthorViewSet(viewsets.ModelViewSet):
     
     
     @action(detail=True, methods=['get'])
-    def get_songs(self, request, pk=None):
+    def get_songs(self, request, pk=None):       
         author = generics.get_object_or_404(Author, pk=pk)
         songs = Song.objects.filter(authors=author)
         serializer = SongSerializer(songs, many=True)
@@ -37,6 +37,14 @@ class AuthorViewSet(viewsets.ModelViewSet):
         albums = Album.objects.filter(owner=author)
         serializer = AlbumSerializer(albums, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'])
+    def get_created_songs(self, request):
+        author = request.user
+        songs = Song.objects.filter(authors=author)
+        serializer = SongSerializer(songs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
     
     
         

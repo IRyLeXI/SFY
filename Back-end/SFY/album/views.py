@@ -37,7 +37,7 @@ class AlbumViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
         user = request.data.get('owner')
         request_user = request.user.id
         
-        if user != request_user:
+        if int(user) != int(request_user):
             return Response({'detail': 'You cannot create album for other user'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = self.get_serializer(data=request.data)
@@ -117,7 +117,14 @@ class AlbumViewSet(viewsets.ModelViewSet, FollowUnfollowMixin):
             most_popular_albums = Album.objects.annotate(
                 total_listens=Sum('songs__listened_num'),
             ).order_by('-total_listens')[:additional_albums_needed]
-            recommended_albums.extend(most_popular_albums)
+
+        existing_album_ids = {album.id for album in recommended_albums}
+        
+        for album in most_popular_albums:
+            if album.id not in existing_album_ids:
+                recommended_albums.append(album)
+
+        recommended_albums = recommended_albums[:6]
 
         recommended_albums.reverse()
         serializer = self.get_serializer(recommended_albums, many=True)

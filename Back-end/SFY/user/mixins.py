@@ -23,7 +23,7 @@ class SearchMixin:
         authors = Author.objects.filter(username__istartswith=query)
         albums = Album.objects.filter(title__istartswith=query)
         playlists = Playlist.objects.filter(title__istartswith=query)
-        users = CustomUser.objects.filter(username__istartswith=query)
+        users = CustomUser.objects.filter(username__istartswith=query, is_author=False)
 
         song_serializer = SongSerializer(songs, many=True)
         author_serializer = AuthorSerializer(authors, many=True)
