@@ -1,9 +1,16 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from .models import CustomUser, UserListens
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = User
+        model = CustomUser
+        exclude = ['listens', 'user_permissions', 'groups', 'is_staff', 'is_active', 'date_joined']
+
+
+class UserListensSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UserListens
         fields = '__all__'
