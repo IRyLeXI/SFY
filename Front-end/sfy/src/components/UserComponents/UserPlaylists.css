@@ -1,0 +1,109 @@
+.user-playlists {
+    align-items: center;
+    background-color: #00000033;
+    padding: 1px 35px 5px 35px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+.header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header h3 {
+    padding-bottom: 20px;
+    font-size: 25px;
+}
+
+.add-playlist-button {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    padding: 10px 40px;
+    background-color: #5c5c5c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-playlist-button:hover {
+    background-color: #808080;
+}
+
+.playlist-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-bottom: 10px;
+    
+}
+
+.view-all-button-playlists {
+    border-radius: 15px;
+    background-color: rgba(70, 70, 70, 0.384);
+    border: 2px solid rgb(138, 138, 138);
+    color: rgb(24, 24, 24);
+    text-shadow: 0 2px 1px rgba(39, 39, 39, 0.137);
+    margin-right: 20px;
+    cursor: pointer;
+    padding: 9px;
+    color: rgb(223, 223, 223);
+}
+
+.view-all-button-playlists:hover {
+    background-color: rgba(128, 128, 128, 0.384);;
+}
+
+.no-playlists {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 34px;
+    color: #464646;
+    background-color: #00000033;
+    margin-top: 10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-playlist-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+}
+
+.add-playlist-form input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-playlist-form label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #464646;
+}
+
+.add-playlist-form label input {
+    margin-left: 10px;
+}
+
+.add-playlist-form button {
+    padding: 10px;
+    background-color: #5c5c5c;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.add-playlist-form button:hover {
+    background-color: #696969;
+}

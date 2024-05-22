@@ -1,0 +1,124 @@
+.song-card {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: rgba(0, 0, 0, 0.356);
+    border-radius: 15px;
+    margin-bottom: 8px;
+}
+
+.song-card:hover {
+    background-color: rgba(48, 48, 48, 0.356);
+}
+
+.song-picture {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 7px;
+    margin-left: 35px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.356);
+}
+
+.song-card table {
+    width: 100%;
+}
+
+.song-card p {
+    margin: 0;
+    color: #d6d6d6;
+    text-shadow: 0 4px 5px rgba(0, 0, 0, 0.356);
+}
+
+.song-card a {
+    text-decoration: none;
+    color: #c4c4c4;
+}
+
+.song-card a:hover {
+    text-decoration: underline;
+}
+
+.song-card td {
+    width: 20%;
+}
+
+.song-card td:nth-child(2) p {
+    margin-left: -230px
+}
+
+.song-card td:nth-child(3) p {
+    margin-left: -85px;
+}
+
+.song-card td:nth-child(4) p {
+    margin-left: 19px;
+}
+
+.song-card td:nth-child(5) p {
+    margin-left: 149px;
+}
+
+.menu-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #d6d6d6;
+}
+
+.menu-button:hover {
+    color: #ffffff;
+}
+
+.menu {
+    position: absolute;
+    background: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.356);
+    right: 0;
+}
+
+.menu button {
+    display: block;
+    background: none;
+    border: none;
+    color: #d6d6d6;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.menu button:hover {
+    background: #444;
+    border-radius: 5px;
+}
+
+.playlist-menu {
+    position: absolute;
+    background: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.356);
+    right: 0;
+    margin-top: 10px;
+}
+
+.playlist-menu button {
+    display: block;
+    background: none;
+    border: none;
+    color: #d6d6d6;
+    padding: 5px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+.playlist-menu button:hover {
+    background: #444;
+    border-radius: 5px;
+}

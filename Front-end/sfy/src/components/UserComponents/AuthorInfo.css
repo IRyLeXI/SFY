@@ -1,0 +1,111 @@
+.author-info {
+    display: flex;
+    align-items: center;
+    background-color: #16161633;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.author-image-container {
+    width: 160px;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.274);
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 35px;
+    margin-left: 20px;
+}
+
+.author-image-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.profile-picture {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.author-image-container.editable:hover .profile-picture {
+    opacity: 0.7;
+}
+
+.edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 1.5em;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.author-image-container.editable:hover .edit-overlay {
+    opacity: 1;
+}
+
+.author-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.author-details h2 {
+    margin: 0 0 10px 0;
+    font-size: 42px;
+}
+
+.author-details p {
+    margin: 5px 0;
+    color: #666;
+}
+
+
+.author-details button {
+    background-color: #4b4b4b96;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.author-details button:disabled {
+    background-color: #0057b3;
+    cursor: not-allowed;
+}
+
+.author-details button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+
+.edit-info-button-author {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-info-button-author:hover {
+    background-color: #17a745;
+  }

@@ -1,0 +1,90 @@
+.author-albums {
+    align-items: center;
+    background-color: #00000033;
+    padding: 1px 35px 5px 35px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+.header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header h3 {
+    margin: 0;
+}
+
+.add-album-button {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    padding: 10px 40px;
+    background-color: #5c5c5c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-album-button:hover{
+    background-color: #808080;
+}
+
+.album-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-bottom: 10px;
+}
+
+.view-all-button {
+    color: #000000;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.view-all-button:hover {
+    color: #2e2e2e;
+}
+
+.no-albums {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 34px;
+    color: #464646;
+    background-color: #00000033;
+    margin-top: 10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-album-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+}
+
+.add-album-form input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-album-form button {
+    padding: 10px;
+    background-color: #585858;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-album-form button:hover{
+    background-color: #696969;
+}

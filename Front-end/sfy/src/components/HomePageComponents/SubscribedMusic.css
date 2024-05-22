@@ -1,0 +1,35 @@
+.subscribed-music {
+  height: 420px;
+  background-color: rgba(70, 70, 70, 0.322);
+  border-radius: 15px;
+  margin: 15px 15px 15px 15px;
+}
+
+.subscribed-music h2 {
+  margin-bottom: 1px;
+  padding-top: 15px;
+  padding-left: 30px;
+  text-align: center;
+}
+
+.subscribed-cards-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-left: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.subscribed-music-no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 34px;
+  color: #464646;
+  margin-top: 10px;
+  border-radius: 15px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

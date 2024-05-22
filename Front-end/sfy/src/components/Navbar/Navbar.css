@@ -1,0 +1,53 @@
+.navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 200px;
+    background-color: #333333e1;
+    color: white;
+    transition: transform 0.3s ease;
+    transform: translateX(-100%);
+    z-index: 1000;
+}
+
+.navbar.open {
+    transform: translateX(0);
+}
+
+.toggle-button {
+    position: absolute;
+    top: 10px;
+    left: 200px;
+    background-color: #333333e1;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin-left: 15px;
+}
+
+nav ul li {
+    margin: 20px 0;
+}
+
+nav ul li a,
+nav ul li button {
+    color: white;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+nav ul li button:hover,
+nav ul li a:hover {
+    text-decoration: underline;
+}

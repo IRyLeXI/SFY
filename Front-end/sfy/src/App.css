@@ -1,17 +1,30 @@
-.App {
-  text-align: center;
+body {
+  background: url(https://img.freepik.com/premium-photo/abstract-pond4-light-background-wallpaper-colorful-gradient-blurry-soft-smooth-motion-bright-shine_792836-79875.jpg);
+  background-size: cover;
+  background-position: fixed;
+  min-height: 100vh;
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.app-container {
+  display: flex;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.main-content {
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
 }
+
+.main-content.shifted {
+  margin-left: 200px;
+}
+
+.main-content {
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+  margin-bottom: 100px;
+}
+
 
 .App-header {
   background-color: #282c34;
@@ -28,11 +41,19 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: white;
+  box-shadow: inset 0 0 5px grey;
+}
+
+::-webkit-scrollbar-thumb {
+  background: grey;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5A5A5A;
 }

@@ -1,0 +1,55 @@
+.author-songs {
+    margin: 20px;
+}
+
+.song-cards-container-author {
+    display: flex;
+    flex-direction: column;
+}
+
+.view-all-button-author,
+.add-song-button-author {
+    margin-top: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.song-form-author {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.song-form-author div {
+    margin-bottom: 10px;
+}
+
+.song-form-author label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.song-form-author input {
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.song-form-author button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.add-song-button-author{
+    border-radius: 15px;
+    background-color: rgba(70, 70, 70, 0.384);
+    border: 2px solid rgb(138, 138, 138);
+    color: rgb(59, 52, 52);
+    text-shadow: 0 2px 1px rgba(39, 39, 39, 0.137);
+    margin-right: 20px;
+}
+
+.add-song-button-author:hover{
+    background-color: rgba(136, 136, 136, 0.384);
+}
+

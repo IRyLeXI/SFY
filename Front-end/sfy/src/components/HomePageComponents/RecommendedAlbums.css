@@ -1,0 +1,24 @@
+.recommended-albums {
+    height: 420px;
+    background-color: rgba(70, 70, 70, 0.322);
+    border-radius: 15px;
+    margin: 15px 15px 15px 15px;
+}
+
+.recommended-albums h2 {
+    margin-bottom: 1px;
+    padding-top: 15px;
+    padding-left: 30px;
+    text-align: center;
+}
+
+.album-cards-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-left: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    /* justify-content: center; */
+}
